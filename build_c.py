@@ -56,20 +56,20 @@ def determine_build_order(path_to_main):
     build_order = " ".join(build_order)
     return build_order
 
-def build(path_to_main, output_name):
+def build(path_to_main, output_path):
     build_order = determine_build_order(path_to_main)
-    command = "gcc -Wall " + build_order + " -o " + output_name
+    command = "gcc -Wall " + build_order + " -o " + output_path
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
     print(output)
 
 def main(argv):
-    if len(argv) < 2:
-        print("Usage of this program:\npython build_c.py <main file> <output name>")
+    if len(argv) != 3:
+        print("Usage of this program:\npython build_c.py <main file> <output path>")
         return
     path_to_main = argv[1]
-    output_name = argv[2]
-    build(path_to_main, output_name)
+    output_path = argv[2]
+    build(path_to_main, output_path)
 
 if __name__ == '__main__':
     main(sys.argv)
