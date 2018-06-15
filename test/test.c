@@ -2,8 +2,8 @@
 
 void test_declareAndRun(char* testName, int (*testFunction) (void))
 {
-    printf("#############\n");
-    printf("Running test:\n'%s'.\n", testName);
+    printf("#############################\n");
+    printf("Running test: '%s'.\n", testName);
     int result = (*testFunction)();
     if(result)
     {
@@ -13,5 +13,4 @@ void test_declareAndRun(char* testName, int (*testFunction) (void))
     {
         printf("Test failed!\n");
     }
-    printf("#############\n");
 }
