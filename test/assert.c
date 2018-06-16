@@ -1,14 +1,10 @@
 #include "assert.h"
 #include <stdio.h>
-
-void printAssertRefs(long expectedRef, long actualRef)
-{
-    printf("Assertion that ref %ld and ref %ld were equal was ", expectedRef, actualRef);
-}
+#include <string.h>
 
 int assertRefEquals(void* expected, void* actual)
 {
-    printAssertRefs((long) expected, (long) actual);
+    printf("Assertion that ref %p and ref %p were equal was ", expected, actual);
     if (expected == actual) 
     {
         printf("true!\n");
@@ -22,7 +18,7 @@ int assertRefEquals(void* expected, void* actual)
 
 int assertCharEquals(char expected, char actual)
 {
-    printAssertRefs((long) expected, (long) actual);
+    printf("Assertion that chars %c and %c were equal was ", expected, actual);
     if (expected == actual)
     {
         printf("true!\n");
@@ -34,9 +30,25 @@ int assertCharEquals(char expected, char actual)
     return expected == actual;
 }
 
+int assertStringEquals(char* expected, char* actual)
+{
+    printf("Assertion that strings %s and %s were equal was ", expected, actual);
+    int areEqual = strcmp(expected, actual) == 0;
+    
+    if (areEqual)
+    {
+        printf("true!\n");
+    } 
+    else 
+    {
+        printf("false!\n");
+    }
+    return areEqual;
+}
+
 int assertLongEquals(long expected, long actual)
 {
-    printAssertRefs((long) expected, (long) actual);
+    printf("Assertion that longs %ld and %ld were equal was ", expected, actual);
     if (expected == actual)
     {
         printf("true!\n");
@@ -50,7 +62,7 @@ int assertLongEquals(long expected, long actual)
 
 int assertIntEquals(int expected, int actual)
 {
-    printAssertRefs((long) expected, (long) actual);
+    printf("Assertion that ints %d and %d were equal was ", expected, actual);
     if (expected == actual)
     {
         printf("true!\n");
@@ -64,7 +76,7 @@ int assertIntEquals(int expected, int actual)
 
 int assertDoubleEquals(double expected, double actual)
 {
-    printAssertRefs((long) expected, (long) actual);
+    printf("Assertion that doubles %f and %f were equal was ", expected, actual);
     if (expected == actual)
     {
         printf("true!\n");
@@ -78,7 +90,7 @@ int assertDoubleEquals(double expected, double actual)
 
 int assertFloatEquals(float expected, float actual)
 {
-    printf("Assertion that floats at ref %ld and ref %ld were equal was ", (long) expected, (long) actual);
+    printf("Assertion that floats %f and %f were equal was ", expected, actual);
     if (expected == actual)
     {
         printf("true!\n");
@@ -90,9 +102,9 @@ int assertFloatEquals(float expected, float actual)
     return expected == actual;
 }
 
-int assertTrue(int boolean)
+int assertTrue(char* expression, int boolean)
 {
-    printf("Assertion that the given boolean expression result is true was ");
+    printf("Assertion that %s is true was ", expression);
     if(boolean == 1)
     {
         printf("true!\n");

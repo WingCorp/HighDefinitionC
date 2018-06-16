@@ -1,37 +1,101 @@
 #include "primitive.h"
-#include <string.h>
 
-Char chr(char val)
+Primitive pchr(char val)
 {
-    Char c = (Char) { .val = val };
-    return c;
+    return (Primitive) { .type = CHAR, .value = (PrimValue) { .chr = val } };
 }
 
-String str(char* val)
+Primitive pstr(char* val)
 {
-    return (String) { .val = val, .length = strlen(val) };
+    return (Primitive) { .type = STRING, .value = (PrimValue) { .str = val } };
 }
 
-Int32 i32(int val)
+Primitive pi32(int val)
 {
-    return (Int32) { .val = val };
+    return (Primitive) { .type = INT, .value = (PrimValue) { .i32 = val } };
 }
 
-Int64 i64(long val)
+Primitive pi64(long val)
 {
-    return (Int64) { .val = val };
+    return (Primitive) { .type = LONG, .value = (PrimValue) { .i64 = val } };
 }
 
-Float32 f32(float val)
+Primitive pf32(float val)
 {
-    return (Float32) { .val = val };
+    return (Primitive) { .type = FLOAT, .value = (PrimValue) { .f32 = val } };
 }
 
-Float64 f64(double val)
+Primitive pf64(double val)
 {
-    return (Float64) { .val = val };
+    return (Primitive) { .type = DOUBLE, .value = (PrimValue) { .f64 = val } };
 }
 
-None none() {
-    return (None) { .sign = '\0' };
+Primitive pref(void* ref)
+{
+    return (Primitive) { .type = REFERENCE, .value = (PrimValue) { .ref = ref } };
+}
+
+char chr(Primitive prim)
+{
+    return prim.value.chr;
+}
+
+char* str(Primitive prim)
+{
+    return prim.value.str;
+}
+
+int i32(Primitive prim)
+{
+    return prim.value.i32;
+}
+
+long i64(Primitive prim)
+{
+    return prim.value.i64;
+}
+
+float f32(Primitive prim)
+{
+    return prim.value.f32;
+}
+
+double f64(Primitive prim)
+{
+    return prim.value.f64;
+}
+
+void* ref(Primitive prim)
+{
+    return prim.value.ref;
+}
+
+void* val(Primitive prim)
+{
+    void* toReturn;
+    switch(prim.type)
+    {
+        case CHAR:
+            toReturn = &(prim.value.chr);
+            break;
+        case STRING:
+            toReturn = &(prim.value.str);
+            break;
+        case INT:
+            toReturn = &(prim.value.i32);
+            break;
+        case LONG:
+            toReturn = &(prim.value.i64);
+            break;
+        case FLOAT:
+            toReturn = &(prim.value.f32);
+            break;
+        case DOUBLE:
+            toReturn = &(prim.value.f64);
+            break;
+        case REFERENCE:
+            toReturn = prim.value.ref;
+            break;
+    }
+    return toReturn;
 }
