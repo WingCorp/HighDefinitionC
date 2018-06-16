@@ -1,12 +1,12 @@
-#include "./../../src/primitive/primitive.h"
+#include "./../../src/dynamic/dynamic.h"
 #include "./../assert.h"
 #include "./../test.h"
 
-int primitive_int32CreatesPrimitive()
+int dynamic_int32CreatesDynamic()
 {
     int testValue = 500;
-    Primitive integer;
-    integer = pi32(testValue);
+    Dynamic integer;
+    integer = di32(testValue);
     return assertIntEquals(testValue, i32(integer));
 }
 
@@ -15,11 +15,11 @@ typedef struct _TestStruct
     char* someString;
 } TestStruct;
 
-int primitive_refCanStoreStruct()
+int dynamic_refCanStoreStruct()
 {
     char* testString = "TestStringLol";
     TestStruct testStruct = (TestStruct) { .someString = testString };
-    Primitive primRef = pref(&testStruct);
+    Dynamic primRef = dref(&testStruct);
     void* refVal = ref(primRef);
     TestStruct refStruct = * ((TestStruct*) (refVal));
     return assertStringEquals(testString, refStruct.someString);
@@ -27,7 +27,7 @@ int primitive_refCanStoreStruct()
 
 int main()
 {
-    test_declareAndRun("Primitive int32 is equivalent to regular int", primitive_int32CreatesPrimitive);
-    test_declareAndRun("Primitive ref can store Struct properly", primitive_refCanStoreStruct);
+    test_declareAndRun("Dynamic int32 is equivalent to regular int", dynamic_int32CreatesDynamic);
+    test_declareAndRun("Dynamic ref can store Struct properly", dynamic_refCanStoreStruct);
     return 1;
 }

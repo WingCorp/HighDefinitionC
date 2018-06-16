@@ -1,7 +1,7 @@
 #include "./../../src/stack/stack.h"
 #include "./../assert.h"
 #include "./../test.h"
-#include "./../../src/primitive/primitive.h"
+#include "./../../src/dynamic/dynamic.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -30,7 +30,7 @@ int stack_pushPopTest()
     int stackCap = 5;
     Stack* stack = stack_init(stackCap);
     int val = 10;
-    stack_push(stack, pi32(val));
+    stack_push(stack, di32(val));
     Option opt = stack_pop(stack);
     stack_destroy(stack);
     return
@@ -39,17 +39,17 @@ int stack_pushPopTest()
         assertIntEquals(val, i32(opt.value));
 }
 
-Primitive squareInts(Primitive intPrim)
+Dynamic squareInts(Dynamic intDyn)
 {
-    return pi32(i32(intPrim) * i32(intPrim));
+    return di32(i32(intDyn) * i32(intDyn));
 }
 
 int stack_mapToSquares()
 {
     Stack* stack = stack_init(3);
-    stack_push(stack, pi32(1));
-    stack_push(stack, pi32(2));
-    stack_push(stack, pi32(3));
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(2));
+    stack_push(stack, di32(3));
     Stack* squaredStack = stack_map(stack, squareInts);
     stack_destroy(stack);
     int nine = i32(stack_pop(squaredStack).value);
@@ -63,9 +63,9 @@ int stack_mapToSquares()
         assertIntEquals(1, one);
 }
 
-Primitive sumInts(Primitive acc, Primitive intPrim)
+Dynamic sumInts(Dynamic acc, Dynamic intDyn)
 {
-    return pi32(i32(acc) + i32(intPrim));
+    return di32(i32(acc) + i32(intDyn));
 }
 
 int stack_foldToSquaredSum()
@@ -74,23 +74,23 @@ int stack_foldToSquaredSum()
     int i;
     for(i = 0; i < 10; i++)
     {
-        stack_push(stack, pi32(i + 1));
+        stack_push(stack, di32(i + 1));
     }
     Stack* squaredStack = stack_map(stack, squareInts);
     stack_destroy(stack);
     int expectedSum = 385;
-    Primitive sum = pi32(0);
+    Dynamic sum = di32(0);
     sum = stack_fold(squaredStack, sum, sumInts);
     return assertIntEquals(expectedSum, i32(sum));
 }
 
-Primitive convertStringsToF(Primitive stringsRef)
+Dynamic convertStringsToF(Dynamic stringsRef)
 {
     void* sRef = ref(stringsRef);
     char** strings = *((char***) (sRef));
     strings[0] = "f";
     strings[1] = "f";
-    return pref(&strings);
+    return dref(&strings);
 }
 
 int stack_mapStrings()
@@ -105,8 +105,8 @@ int stack_mapStrings()
     stringsB[0] = "ABCD";
     stringsB[1] = "abcd";
 
-    Primitive stringsARef = pref(&stringsA);
-    Primitive stringsBRef = pref(&stringsB);
+    Dynamic stringsARef = dref(&stringsA);
+    Dynamic stringsBRef = dref(&stringsB);
 
     stack_push(stack, stringsARef);
     stack_push(stack, stringsBRef);

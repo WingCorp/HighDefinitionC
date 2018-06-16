@@ -8,7 +8,7 @@
  * @date 2018-06-15
  */
 
-#include "./../primitive/primitive.h"
+#include "./../dynamic/dynamic.h"
 
 typedef enum _OptionType
 {
@@ -19,10 +19,10 @@ typedef enum _OptionType
 typedef struct _Option
 {
     OptionType type;
-    Primitive value;
+    Dynamic value;
 } Option;
 
 Option none();
-Option some(Primitive value);
+Option some(Dynamic value);
 
 #endif

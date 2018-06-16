@@ -5,7 +5,7 @@ Option none()
     return (Option) { .type = NONE };
 }
 
-Option some(Primitive value)
+Option some(Dynamic value)
 {
     return (Option) { .type = SOME, .value = value };
 }

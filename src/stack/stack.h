@@ -2,15 +2,16 @@
 #define STACK_H
 
 /**
- * @brief A resizable stack for working with primitives.
+ * @brief A resizable stack for working with dynamics.
  * 
  * @file stack.h
  * @author WingCorp
  * @date 2018-06-15
  */
 
-#include "./../primitive/primitive.h"
+#include "./../dynamic/dynamic.h"
 #include "./../option/option.h"
+#include "./../iterator/iterator.h"
 
 typedef struct _Stack Stack;
 
@@ -33,9 +34,9 @@ void stack_destroy(Stack* stack);
  * @brief Pushes a value on the stack.
  * 
  * @param stack the stack to push the value on.
- * @param prim the primitive to put on the stack.
+ * @param dyn the dynamic to put on the stack.
  */
-void stack_push(Stack* stack, Primitive prim);
+void stack_push(Stack* stack, Dynamic dyn);
 
 /**
  * @brief Pops a value from the stack.
@@ -67,6 +68,8 @@ int stack_capacity(Stack* stack);
  */
 void stack_trim(Stack* stack);
 
+Iterator stack_iterator();
+
 /**
  * @brief Maps every entry in the stack to a new stack using a mapper function.
  * 
@@ -74,16 +77,16 @@ void stack_trim(Stack* stack);
  * @param mapper the mapper function.
  * @return Stack* the mapped stack.
  */
-Stack* stack_map(Stack* stack, Primitive (*mapper) (Primitive));
+Stack* stack_map(Stack* stack, Dynamic (*mapper) (Dynamic));
 
 /**
  * @brief Folds over every entry in the stack.
  * 
  * @param stack the stack to fold.
  * @param state the initial state to fold onto.
- * @param folder the folder function with the signature Primitive folder(Primitive acc, Primitive i)
- * @return Primitive the final state.
+ * @param folder the folder function with the signature Dynamic folder(Dynamic acc, Dynamic i)
+ * @return Dynamic the final state.
  */
-Primitive stack_fold(Stack* stack, Primitive state, Primitive (*folder) (Primitive, Primitive));
+Dynamic stack_fold(Stack* stack, Dynamic state, Dynamic (*folder) (Dynamic, Dynamic));
 
 #endif
