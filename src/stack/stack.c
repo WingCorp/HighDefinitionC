@@ -93,3 +93,27 @@ void stack_trim(Stack* stack)
     stack->primitives = realloc(stack->primitives, newCap * sizeof(Primitive));
     stack->capacity = newCap;
 }
+
+Stack* stack_map(Stack* stack, Primitive (*mapper) (Primitive))
+{
+    Stack* mappedStack = stack_init(stack->size);
+    int i;
+    for (i = 0; i < stack->size; i++){
+        Primitive currentValue = stack->primitives[i];
+        Primitive mappedValue = (*mapper)(currentValue);
+        stack_push(mappedStack, mappedValue);
+    }
+    return mappedStack;
+}
+
+Primitive stack_fold(Stack* stack, Primitive state, Primitive (*folder) (Primitive, Primitive))
+{
+    Primitive currentState = state;
+    int i;
+    for (i = 0; i < stack->size; i++)
+    {
+        Primitive currentValue = stack->primitives[i];
+        currentState = (*folder)(currentState, currentValue);
+    }
+    return currentState;
+}

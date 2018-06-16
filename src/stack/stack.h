@@ -67,4 +67,23 @@ int stack_capacity(Stack* stack);
  */
 void stack_trim(Stack* stack);
 
+/**
+ * @brief Maps every entry in the stack to a new stack using a mapper function.
+ * 
+ * @param stack the stack to map.
+ * @param mapper the mapper function.
+ * @return Stack* the mapped stack.
+ */
+Stack* stack_map(Stack* stack, Primitive (*mapper) (Primitive));
+
+/**
+ * @brief Folds over every entry in the stack.
+ * 
+ * @param stack the stack to fold.
+ * @param state the initial state to fold onto.
+ * @param folder the folder function with the signature Primitive folder(Primitive acc, Primitive i)
+ * @return Primitive the final state.
+ */
+Primitive stack_fold(Stack* stack, Primitive state, Primitive (*folder) (Primitive, Primitive));
+
 #endif
