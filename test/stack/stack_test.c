@@ -6,7 +6,7 @@
 int stack_initWorks()
 {
     int stackCap = 10;
-    Stack* stack = stack_init(stackCap, INT);
+    Stack* stack = stack_init(stackCap);
     return 
         assertIntEquals(stackCap, stack_capacity(stack))
         &&
@@ -16,7 +16,7 @@ int stack_initWorks()
 int stack_destroyWorks()
 {
     int stackCap = 10;
-    Stack* stack = stack_init(stackCap, INT);
+    Stack* stack = stack_init(stackCap);
     stack_destroy(stack);
     //Honestly, I have no idea how to test this.
     return assertTrue("Stack is destroyed? I don't know.", 1);
@@ -25,7 +25,7 @@ int stack_destroyWorks()
 int stack_pushPopTest()
 {
     int stackCap = 5;
-    Stack* stack = stack_init(stackCap, INT);
+    Stack* stack = stack_init(stackCap);
     int val = 10;
     stack_push(stack, pi32(val));
     Option opt = stack_pop(stack);

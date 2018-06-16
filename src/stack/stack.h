@@ -20,7 +20,7 @@ typedef struct _Stack Stack;
  * @param initialCap the initial capacity of the stack.
  * @return Stack* a pointer to the new stack.
  */
-Stack* stack_init(int initialCap, PrimType type);
+Stack* stack_init(int initialCap);
 
 /**
  * @brief Frees the memory occupied by a Stack data structure.

@@ -15,14 +15,12 @@ typedef struct _Stack
 {
     int capacity;
     int size;
-    PrimType type;
     Primitive* primitives;
 } Stack;
 
-Stack* stack_init(int initialCap, PrimType type)
+Stack* stack_init(int initialCap)
 {
     Stack* stack = malloc(sizeof(Stack));
-    stack->type = type;
     stack->capacity = initialCap;
     stack->size = 0;
     stack->primitives = malloc(sizeof(Primitive) * initialCap);
@@ -50,11 +48,6 @@ void increaseCapacity(Stack* stack)
 
 void stack_push(Stack* stack, Primitive prim)
 {
-    if (stack->type != prim.type)
-    {
-        printf("TypeError: Cannot add Primitive of type %d to stack of type %d\n", prim.type, stack->type);
-        exit(EXIT_FAILURE);
-    }
     int top = stack->size;
     if (top + 1 == stack->capacity)
     {
