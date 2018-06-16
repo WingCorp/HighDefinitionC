@@ -94,6 +94,11 @@ void stack_trim(Stack* stack)
     stack->capacity = newCap;
 }
 
+Iterator stack_iterator(Stack* stack)
+{
+    return iterator(stack->dynamics, stack->size);
+}
+
 Stack* stack_map(Stack* stack, Dynamic (*mapper) (Dynamic))
 {
     Stack* mappedStack = stack_init(stack->size);

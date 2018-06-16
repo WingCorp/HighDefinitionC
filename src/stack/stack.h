@@ -68,7 +68,12 @@ int stack_capacity(Stack* stack);
  */
 void stack_trim(Stack* stack);
 
-Iterator stack_iterator();
+/**
+ * @brief Gets an iterator from the current stack.
+ * 
+ * @return Iterator an iterator.
+ */
+Iterator stack_iterator(Stack* stack);
 
 /**
  * @brief Maps every entry in the stack to a new stack using a mapper function.
