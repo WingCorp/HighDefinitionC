@@ -1,13 +1,16 @@
 #include "map.h"
 #include <stdlib.h>
 
-Iterator map(Iterator ite, Dynamic (*mapper) (Dynamic))
+Iterator* map(Iterator* ite, Dynamic (*mapper) (Dynamic))
 {
-    Dynamic* mappedValues = malloc(ite.length * sizeof(Dynamic));
-    int i;
-    for (i = 0; i < ite.length; i++)
+    int size = iterator_remaining(ite);
+    Dynamic* mappedValues = malloc(size * sizeof(Dynamic));
+    int i = 0;
+    while(iterator_hasNext(ite))
     {
-        mappedValues[i] = (*mapper)(ite.data[i]);
+        mappedValues[i] = (*mapper)(iterator_next(ite).value);
+        i += 1;
     }
-    return iterator_init(mappedValues, ite.length);
+    iterator_reset(ite);
+    return iterator_init(mappedValues, size);
 }

@@ -1,5 +1,4 @@
 #include "dynamic.h"
-#include <stdio.h>
 
 Dynamic dbol(bool val)
 {
@@ -9,11 +8,6 @@ Dynamic dbol(bool val)
 Dynamic dchr(char val)
 {
     return (Dynamic) { .type = CHAR, .value = (DynValue) { .chr = val } };
-}
-
-Dynamic dstr(char* val)
-{
-    return (Dynamic) { .type = STRING, .value = (DynValue) { .str = val } };
 }
 
 Dynamic di32(int val)
@@ -51,11 +45,6 @@ char chr(Dynamic dyn)
     return dyn.value.chr;
 }
 
-char* str(Dynamic dyn)
-{
-    return dyn.value.str;
-}
-
 int i32(Dynamic dyn)
 {
     return dyn.value.i32;
@@ -91,9 +80,6 @@ void* val(Dynamic dyn)
             break;
         case CHAR:
             toReturn = &(dyn.value.chr);
-            break;
-        case STRING:
-            toReturn = &(dyn.value.str);
             break;
         case INT:
             toReturn = &(dyn.value.i32);

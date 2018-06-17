@@ -42,7 +42,7 @@ Option some(Dynamic value);
  *        that takes the result of the given option
  *        and applies the option to the given function
  *        if the option was some.
-
+ *
  * @param opt an Option value.
  * @param optFunc a function of signature: Option <name>(Dynamic <arg>); 
  * @return Option an option value.

@@ -22,6 +22,6 @@
  * @param mapper the mapper function, must have signature: Dynamic <name>(Dynamic <arg>)
  * @return Iterator a new iterator for the new values.
  */
-Iterator map(Iterator iterator, Dynamic (*mapper) (Dynamic));
+Iterator* map(Iterator* iterator, Dynamic (*mapper) (Dynamic));
 
 #endif

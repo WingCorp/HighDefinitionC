@@ -4,12 +4,7 @@
 #include "./../dynamic/dynamic.h"
 #include "./../option/option.h"
 
-typedef struct _Iterator
-{
-    int position;
-    int length;
-    Dynamic* data;
-} Iterator;
+typedef struct _Iterator Iterator;
 
 /**
  * @brief Initializes a new iterator from a Dynamic pointer.
@@ -18,7 +13,7 @@ typedef struct _Iterator
  * @param length The length of the data.
  * @return Iterator An iterator struct.
  */
-Iterator iterator_init(Dynamic* data, int length);
+Iterator* iterator_init(Dynamic* data, int length);
 
 /**
  * @brief Whether an iterator holds another value.
@@ -26,7 +21,7 @@ Iterator iterator_init(Dynamic* data, int length);
  * @param iterator 
  * @return bool a bool value.
  */
-bool iterator_hasNext(Iterator iterator);
+bool iterator_hasNext(Iterator* iterator);
 
 /**
  * @brief Retrieves the next value from the iterator.
@@ -34,13 +29,28 @@ bool iterator_hasNext(Iterator iterator);
  * @param iterator the iterator to get the value from.
  * @return Option some if there is a value, none if there isn't.
  */
-Option iterator_next(Iterator iterator);
+Option iterator_next(Iterator* iterator);
+
+/**
+ * @brief How many entries that remain in the iterator.
+ * 
+ * @param iterator 
+ * @return int 
+ */
+int iterator_remaining(Iterator* iterator);
+
+/**
+ * @brief Resets iterator.
+ * 
+ * @param iterator the iterator.
+ */
+void iterator_reset(Iterator* iterator);
 
 /**
  * @brief Destroys the iterator and the values that the iterator is reading from.
  * 
  * @param iterator the iterator to destroy.
  */
-void iterator_destroy(Iterator iterator);
+void iterator_destroy(Iterator* iterator);
 
 #endif

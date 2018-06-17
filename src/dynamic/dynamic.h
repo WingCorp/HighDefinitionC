@@ -16,7 +16,6 @@ typedef enum _DynType
 {
     BOOL,
     CHAR,
-    STRING,
     INT,
     LONG,
     FLOAT,
@@ -28,7 +27,6 @@ typedef union _DynValue
 {
     bool bol;
     char chr;
-    char* str;
     int i32;
     long i64;
     float f32;
@@ -44,7 +42,6 @@ typedef struct _Dynamic
 
 Dynamic dbol(bool val);
 Dynamic dchr(char val);
-Dynamic dstr(char* val);
 Dynamic di32(int val);
 Dynamic di64(long i64);
 Dynamic df32(float val);
@@ -57,7 +54,6 @@ Dynamic dref(void* ref);
 
 bool bol(Dynamic dyn);
 char chr(Dynamic dyn);
-char* str(Dynamic dyn);
 int i32(Dynamic dyn);
 long i64(Dynamic dyn);
 float f32(Dynamic dyn);

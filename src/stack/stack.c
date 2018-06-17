@@ -95,7 +95,7 @@ void stack_trim(Stack* stack)
     stack->capacity = newCap;
 }
 
-Iterator stack_iterator(Stack* stack)
+Iterator* stack_iterator(Stack* stack)
 {
     return iterator_init(stack->dynamics, stack->size);
 }

@@ -1,10 +1,10 @@
 #include "foreach.h"
 
-void foreach(Iterator iterator, void (*action) (Dynamic))
+void foreach(Iterator* iterator, void (*action) (Dynamic))
 {
-    int i;
-    for (i = 0; i < iterator.length; i++)
+    while (iterator_hasNext(iterator))
     {
-        (*action)(iterator.data[i]);
+        (*action)(iterator_next(iterator).value);
     }
+    iterator_reset(iterator);
 }

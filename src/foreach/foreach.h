@@ -18,6 +18,6 @@
  * @param iterator the iterator to loop through.
  * @param action the action function, must have signature: void <name>(Dynamic <arg>)
  */
-void foreach(Iterator iterator, void (*action) (Dynamic));
+void foreach(Iterator* iterator, void (*action) (Dynamic));
 
 #endif

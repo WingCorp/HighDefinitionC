@@ -20,6 +20,6 @@
  * @param folder the folder function with the signature Dynamic folder(Dynamic acc, Dynamic i)
  * @return Dynamic the final state.
  */
-Dynamic fold(Iterator iterator, Dynamic initialState, Dynamic (*folder) (Dynamic, Dynamic));
+Dynamic fold(Iterator* iterator, Dynamic initialState, Dynamic (*folder) (Dynamic, Dynamic));
 
 #endif
