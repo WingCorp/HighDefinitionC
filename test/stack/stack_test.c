@@ -89,6 +89,7 @@ int stack_foldToSquaredSum()
 
 int stack_resizingWorks()
 {
+    return assertTrue("something in this test is not causing seg faults", false);
     Stack* stack = stack_init(1);
 
     stack_push(stack, di32(1));
@@ -136,6 +137,6 @@ int main()
     test_declareAndRun("Stack maps integers to their squares correctly", stack_mapToSquares);
     test_declareAndRun("Stack maps integers to squares and sums them using fold, works correctly", stack_foldToSquaredSum);
     test_declareAndRun("Iterator from stack works as intended", stack_iteratorWorks);
-    // test_declareAndRun("Stack grows when values are added", stack_resizingWorks);
+    test_declareAndRun("Stack grows when values are added", stack_resizingWorks);
     return 0;
 }
