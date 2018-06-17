@@ -89,7 +89,6 @@ int stack_foldToSquaredSum()
 
 int stack_resizingWorks()
 {
-    return assertTrue("something in this test is not causing seg faults", false);
     Stack* stack = stack_init(1);
 
     stack_push(stack, di32(1));
@@ -97,11 +96,13 @@ int stack_resizingWorks()
     stack_push(stack, di32(500));
     stack_push(stack, di32(52));
 
+    int stackSizeCorrect = assertIntEquals(4, stack_size(stack));
+
     stack_pop(stack);
     stack_pop(stack);
     stack_pop(stack);
     stack_pop(stack);
-    return assertIntEquals(0, stack_size(stack));
+    return stackSizeCorrect && assertIntEquals(0, stack_size(stack));
 }
 
 void printdi32(Dynamic d)

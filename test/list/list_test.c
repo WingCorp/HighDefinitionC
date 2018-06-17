@@ -31,7 +31,7 @@ void printdstr(Dynamic dref)
 
 int list_consTwiceIsListOfLengthTwo()
 {
-    return assertTrue("this test works", false);
+    // return assertTrue("this test works", false);
     List* list = list_empty();
     printf("Cons hello on list\n");
     List* consd1 = list_cons(list, dref(&"Hello, "));

@@ -57,11 +57,14 @@ def determine_build_order(path_to_main):
     return build_order
 
 def build(path_to_main, output_path):
+    print("Building source: '{}' to {}.".format(path_to_main, output_path))    
     build_order = determine_build_order(path_to_main)
     command = "gcc -Wall " + build_order + " -o " + output_path
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
-    print(output)
+    if len(output.strip()) > 1:
+        print(output)
+    print("Exiting build process...")    
 
 def main(argv):
     if len(argv) != 3:

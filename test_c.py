@@ -1,10 +1,20 @@
 import sys
 from os import listdir, walk
-from os.path import isfile, join, split
+from os.path import isfile, join, split, isdir, basename, normpath
 import subprocess
+from build_c import build
 
-def get_files_in_dir(path):
-    return [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f.endswith(".o")]
+def get_files_in_dir(path, suffix, excluding):
+    files = []
+    ls = listdir(path)
+    for f in ls:
+        local_path = join(path, f)
+        if isdir(local_path) and f not in excluding:
+            files += (get_files_in_dir(local_path, suffix, excluding))
+        elif f.endswith(suffix) and f not in excluding:
+            files.append(local_path)
+    return files;
+    # return [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f.endswith(".o")]
 
 def get_test_results(output):
     passed = 0
@@ -57,14 +67,23 @@ def run_tests_suites(files):
         failed_total += failed
     print("{} tests failed, {} tests passed, ran in total {} tests.".format(failed_total, passed_total, failed_total + passed_total))
 
+def build_test_executables(test_sources, exec_path):
+    for source in test_sources:
+        name = basename(normpath(source))
+        exec_name = name.replace(".c", ".o")
+        build(source, join(exec_path, exec_name))
+
 def main(argv):
-    if len(argv) != 2:
-        print("Usage of this program:\npython3 test_c.py <test directory path>")
+    if len(argv) != 3:
+        print("Usage of this program:\npython3 test_c.py <test source directory> <test executables directory>")
         return
     pass
-    path = argv[1]
-    test_files = get_files_in_dir(path)
-    run_tests_suites(test_files)
+    src_path = argv[1]
+    exec_path = argv[2]
+    test_sources = get_files_in_dir(src_path, ".c", ["assert.c", "test.c"])
+    build_test_executables(test_sources, exec_path)
+    test_execs = get_files_in_dir(exec_path, ".o", [])
+    run_tests_suites(test_execs)
 
 if __name__ == '__main__':
     main(sys.argv)
