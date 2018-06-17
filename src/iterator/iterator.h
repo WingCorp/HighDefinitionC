@@ -18,7 +18,7 @@ typedef struct _Iterator
  * @param length The length of the data.
  * @return Iterator An iterator struct.
  */
-Iterator iterator(Dynamic* data, int length);
+Iterator iterator_init(Dynamic* data, int length);
 
 /**
  * @brief Whether an iterator holds another value.

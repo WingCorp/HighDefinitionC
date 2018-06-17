@@ -19,8 +19,8 @@ int dynamic_refCanStoreStruct()
 {
     char* testString = "TestStringLol";
     TestStruct testStruct = (TestStruct) { .someString = testString };
-    Dynamic primRef = dref(&testStruct);
-    void* refVal = ref(primRef);
+    Dynamic dRef = dref(&testStruct);
+    void* refVal = ref(dRef);
     TestStruct refStruct = * ((TestStruct*) (refVal));
     return assertStringEquals(testString, refStruct.someString);
 }
@@ -29,5 +29,5 @@ int main()
 {
     test_declareAndRun("Dynamic int32 is equivalent to regular int", dynamic_int32CreatesDynamic);
     test_declareAndRun("Dynamic ref can store Struct properly", dynamic_refCanStoreStruct);
-    return 1;
+    return 0;
 }

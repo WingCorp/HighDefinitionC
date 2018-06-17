@@ -8,6 +8,7 @@
 
 #include "stack.h"
 #include "./../option/option.h"
+#include "./../iterator/iterator.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -43,7 +44,7 @@ void reallocStack(Stack* stack, float sizeChange)
 
 void increaseCapacity(Stack* stack)
 {
-    reallocStack(stack, 1.5);
+    reallocStack(stack, 2.5);
 }
 
 void stack_push(Stack* stack, Dynamic dyn)
@@ -70,7 +71,7 @@ Option stack_pop(Stack* stack)
     int top = stack->size - 1;
     Dynamic toReturn = stack->dynamics[top];
     stack->size -= 1;
-    if (stack->size < 2 * stack->capacity)
+    if (stack->size * 2 < stack->capacity)
     {
         decreaseCapacity(stack);
     }    
@@ -96,7 +97,7 @@ void stack_trim(Stack* stack)
 
 Iterator stack_iterator(Stack* stack)
 {
-    return iterator(stack->dynamics, stack->size);
+    return iterator_init(stack->dynamics, stack->size);
 }
 
 Stack* stack_map(Stack* stack, Dynamic (*mapper) (Dynamic))

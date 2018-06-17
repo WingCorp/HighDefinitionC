@@ -1,4 +1,5 @@
 #include "dynamic.h"
+#include <stdio.h>
 
 Dynamic dbol(bool val)
 {

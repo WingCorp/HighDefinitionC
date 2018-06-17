@@ -28,5 +28,5 @@ int main()
     test_declareAndRun("Math abs given positive integer returns positive", math_intAbsPosGivesPos);
     test_declareAndRun("Math abs given negative float returns positive", math_floatAbsNegGivesPos);
     test_declareAndRun("Math abs given positive float returns positive", math_floatAbsPosGivesPos);
-    return 1;
+    return 0;
 }

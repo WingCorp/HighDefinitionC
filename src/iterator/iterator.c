@@ -1,7 +1,7 @@
 #include "iterator.h"
 #include <stdlib.h>
 
-Iterator iterator(Dynamic* data, int length)
+Iterator iterator_init(Dynamic* data, int length)
 {
     return (Iterator) { .position = 0, .length = length, .data = data };
 }

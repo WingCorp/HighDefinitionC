@@ -30,6 +30,11 @@ def run_tests(test_suite):
     print("Tests in {}:\n".format(test_name))
     cmd = [test_suite]
     sp = subprocess.run(cmd, stdout=subprocess.PIPE)
+    try:
+        sp.check_returncode()
+    except:
+        print("Tests in {} caused a segmentation fault!\n".format(test_name))
+        return (0, 1)
     output = sp.stdout.decode("utf-8")
     failed_tests, total = get_test_results(output)
     failed_len = len(failed_tests)

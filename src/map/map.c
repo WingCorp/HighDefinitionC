@@ -9,5 +9,5 @@ Iterator map(Iterator ite, Dynamic (*mapper) (Dynamic))
     {
         mappedValues[i] = (*mapper)(ite.data[i]);
     }
-    return iterator(mappedValues, ite.length);
+    return iterator_init(mappedValues, ite.length);
 }

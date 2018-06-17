@@ -2,8 +2,11 @@
 #include "./../assert.h"
 #include "./../test.h"
 #include "./../../src/dynamic/dynamic.h"
+#include "./../../src/foreach/foreach.h"
+#include "./../../src/fold/fold.h"
+#include "./../../src/map/map.h"
 #include <stdio.h>
-#include <ctype.h>
+#include <stdlib.h>
 
 int stack_initWorks()
 {
@@ -84,38 +87,45 @@ int stack_foldToSquaredSum()
     return assertIntEquals(expectedSum, i32(sum));
 }
 
-Dynamic convertStringsToF(Dynamic stringsRef)
-{
-    void* sRef = ref(stringsRef);
-    char** strings = *((char***) (sRef));
-    strings[0] = "f";
-    strings[1] = "f";
-    return dref(&strings);
-}
-
-int stack_mapStrings()
+int stack_resizingWorks()
 {
     Stack* stack = stack_init(1);
-    
-    char* stringsA[2];
-    stringsA[0] = "WassUP";
-    stringsA[1] = "wassup";
-    
-    char* stringsB[2];
-    stringsB[0] = "ABCD";
-    stringsB[1] = "abcd";
 
-    Dynamic stringsARef = dref(&stringsA);
-    Dynamic stringsBRef = dref(&stringsB);
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(2));
+    stack_push(stack, di32(500));
+    stack_push(stack, di32(52));
 
-    stack_push(stack, stringsARef);
-    stack_push(stack, stringsBRef);
+    stack_pop(stack);
+    stack_pop(stack);
+    stack_pop(stack);
+    stack_pop(stack);
+    return assertIntEquals(0, stack_size(stack));
+}
 
-    Stack* mappedStack = stack_map(stack, convertStringsToF);
-    stack_destroy(stack);
-    char** bStrings = *((char***) ref(stack_pop(mappedStack).value));
-    char* f = bStrings[0];
-    return assertStringEquals("f", f);
+void printdi32(Dynamic d)
+{
+    printf("%d\n", i32(d));
+}
+
+Dynamic add(Dynamic a, Dynamic d)
+{
+    return (di32(i32(a) + i32(d)));
+}
+
+int stack_iteratorWorks()
+{
+    Stack* stack = stack_init(5);
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(1));
+    stack_push(stack, di32(1));
+    Iterator it = stack_iterator(stack);
+    foreach(it, printdi32);
+    Dynamic sum;
+    sum = fold(it, di32(0), add);
+    return assertIntEquals(5, i32(sum));
 }
 
 int main()
@@ -125,6 +135,7 @@ int main()
     test_declareAndRun("Pushing the int 10 onto stack and then popping returns Option of Some(10)", stack_pushPopTest);
     test_declareAndRun("Stack maps integers to their squares correctly", stack_mapToSquares);
     test_declareAndRun("Stack maps integers to squares and sums them using fold, works correctly", stack_foldToSquaredSum);
-    // test_declareAndRun("Stack with advanced datatype can still map", stack_mapStrings); TODO: FIX THIS.
-    return 1;
+    test_declareAndRun("Iterator from stack works as intended", stack_iteratorWorks);
+    test_declareAndRun("Stack grows when values are added", stack_resizingWorks);
+    return 0;
 }
