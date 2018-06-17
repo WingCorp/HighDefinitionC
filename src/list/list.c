@@ -180,17 +180,11 @@ Iterator* list_iterator(List* list)
 {
     int length = list->length;
     int i = 0;
-    printf("malloc dynArr\n");
     Dynamic* dynArr = malloc(length * sizeof(Dynamic));
-    printf("dealloc list->start\n");
     Link* currentLink = list->start;
-    printf("currentLink: %p, currentLink->next: %p\n", (void*) currentLink, (void*) currentLink->next);
-    printf("while loop:\n");
     while(currentLink->next)
     {
-        printf("dealloc list->value\n");
         Dynamic currentValue = currentLink->value;
-        printf("set dynArr[%d]\n", i);
         dynArr[i] = currentValue;
         currentLink = currentLink->next;
         i += 1;
