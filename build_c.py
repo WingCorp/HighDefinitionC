@@ -11,8 +11,11 @@ def determine_path_to_dependency(own_path, dep_rel_path):
     rel_dir_parts = path.split("/")[0:-1]
     rel_dir = "/".join(rel_dir_parts)
     dep_rel_source = dep_rel_path.replace(".h", ".c")
-    return rel_dir + "/" + dep_rel_source
-
+    rel_path = rel_dir + "/" + dep_rel_source
+    if rel_path.startswith("/"):
+        rel_path = "." + rel_path
+    return rel_path
+    
 def determine_file_name(path):
     if "\\" in path:
         path = path.replace("\\", "/")
