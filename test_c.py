@@ -13,8 +13,7 @@ def get_files_in_dir(path, suffix, excluding):
             files += (get_files_in_dir(local_path, suffix, excluding))
         elif f.endswith(suffix) and f not in excluding:
             files.append(local_path)
-    return files;
-    # return [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f.endswith(".o")]
+    return files
 
 def get_test_results(output):
     passed = 0
