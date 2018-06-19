@@ -62,7 +62,7 @@ def determine_build_order(path_to_main):
 def build(path_to_main, output_path):
     print("Building source: '{}' to {}.".format(path_to_main, output_path))    
     build_order = determine_build_order(path_to_main)
-    command = "gcc -Wall " + build_order + " -o " + output_path
+    command = "gcc -Wall -rdynamic " + build_order + " -o " + output_path
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
     if len(output.strip()) > 1:

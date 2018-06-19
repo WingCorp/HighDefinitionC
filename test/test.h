@@ -7,5 +7,4 @@
  * @param testFunction A test function, must take nothing and return an int, 1 for passed, else not passed.
  */
 void test_declareAndRun(char* testName, int (*testFunction) (void));
-
 #endif

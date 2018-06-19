@@ -11,4 +11,6 @@ int math_intAbs(int i);
 double math_doubleAbs(double d);
 float math_floatAbs(float f);
 
+int ilog10(int i);
+
 #endif

@@ -48,10 +48,8 @@ int array_length(Array* array);
  * @brief Get an item from the array.
  * 
  * @param array the array.
- * @param index the index for the array. 
- *        Allows negative numbers for backtracing,
- *        but only as far as -1 * array_length(array)
- * @return Option an option monad, some if index < length and index > -length
+ * @param index the index for the array.
+ * @return Option an option value, some if index < length and index > 0
  *         else returns none.
  */
 Option array_item(Array* array, int index);
@@ -85,11 +83,11 @@ Array* array_initFromIterator(Iterator* it);
 /**
  * @brief Initialize array with function.
  * 
- * @param size size of the array.
+ * @param length the length of the array.
  * @param initFunc function that inserts dynamic values into the array, based on the index.
  * @return Array* the new array.
  */
-Array* list_initFromFunc(int size, Dynamic (*initFunc)(int));
+Array* list_initFromFunc(int length, Dynamic (*initFunc)(int));
 
 /**
  * @brief Destroys the array, freeing the memory it held.
