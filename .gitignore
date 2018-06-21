@@ -53,3 +53,5 @@ dkms.conf
 
 # Python stuff
 /__pycache__
+
+./.vscode

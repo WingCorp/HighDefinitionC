@@ -1,6 +1,8 @@
 #ifndef FAIL_H
 #define FAIL_H
 
+#include <stdbool.h>
+
 /**
  * @brief The fail-module.
  * 

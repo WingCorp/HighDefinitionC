@@ -60,12 +60,7 @@ void array_setItem(Array* array, int index, Dynamic value)
     }
     else
     {
-        char* failFormat = "array_setItem was called with an index that was out of bounds!\n index: %d, bounds: [0; %d[";
-        int indexChars = (int) (ilog10(index));
-        int lengthChars = (int) (ilog10(array->length - 1));
-        char* failBuffer = malloc(sizeof(char) * strlen(failFormat) + indexChars + lengthChars); 
-        sprintf(failBuffer, failFormat, index, array->length - 1);
-        failwith(failBuffer);
+        failwith("Cannot set item to index that is out of bounds!");
     }
 }
 

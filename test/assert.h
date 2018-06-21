@@ -16,6 +16,11 @@ int assertCharEquals(char expected, char actual);
 int assertStringEquals(char* expected, char* actual);
 
 /**
+ * Find out whether a string contains a given string.
+ */
+int assertStringContains(char* testString, char* expected);
+
+/**
  * Find out whether two given longs are equal.
  **/
 int assertLongEquals(long expected, long actual);

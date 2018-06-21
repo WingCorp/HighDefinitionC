@@ -46,6 +46,22 @@ int assertStringEquals(char* expected, char* actual)
     return areEqual;
 }
 
+int assertStringContains(char* testString, char* expected)
+{
+    printf("Assertion that string '%s' contained '%s'\x1b[0m was ", testString, expected);
+    int contained = strstr(testString, expected) != NULL;
+
+    if (contained)
+    {
+        printf("true!\n");
+    } 
+    else 
+    {
+        printf("false!\n");
+    }
+    return contained;
+}
+
 int assertLongEquals(long expected, long actual)
 {
     printf("Assertion that longs %ld and %ld were equal was ", expected, actual);

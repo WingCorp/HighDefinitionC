@@ -1,8 +1,8 @@
 #include "./../test.h"
 #include "./../assert.h"
 #include "./../../src/array/array.h"
-
-#define TESTING
+#include <stdio.h>
+#include <string.h>
 
 int array_emptyCanBeUsedForValues()
 {
@@ -15,28 +15,48 @@ int array_emptyCanBeUsedForValues()
         assertIntEquals(1, i32(itemOpt.value));
 }
 
-int array_emptyWithLengthLEQZeroCausesFail()
+
+/* Test: Initialize array with length of zero. */
+void array_emptyWithLengthLEQZero()
 {
     array_empty(0);
-    return assertTrue("stdout should contain stacktrace", true);
+}
+
+int assertStdOutContains_array_empty(char* stackTrace)
+{
+    return assertStringContains(stackTrace, "array_empty") && assertStringContains(stackTrace, "Cannot initialize array of length <= 0!");
+}
+
+int array_emptyWithLengthLEQZeroCausesFail()
+{
+    return test_runInSubProcess(array_emptyWithLengthLEQZero, assertStdOutContains_array_empty);
+}
+/* --- */
+
+
+/* Test: setItem in array outside of bounds */
+void array_setItemIndexOutOfBounds()
+{
+    Array* array = array_empty(1);
+    array_setItem(array, -1, di32(500));
+}
+
+int assertStdOUtContains_array_setItem(char* stackTrace)
+{
+    return assertStringContains(stackTrace, "array_setItem");
 }
 
 int array_setItemIndexOutOfBoundsCausesFail()
 {
-    array_empty(1);
-
-    //I mean... I could pipe stdout into a buffer and check, but I've got eyes.
-    return assertTrue("stdout should contain stacktrace", true);
-    //And I'm very lazy.
+    return test_runInSubProcess(array_setItemIndexOutOfBounds, assertStdOUtContains_array_setItem);
 }
+
+/* --- */
 
 int main()
 {
     test_declareAndRun("Empty array can be used for values", array_emptyCanBeUsedForValues);
-    
-    // These two tests works as of 2018/06/20, but the fail-function exits the program completely...
-    // Must work out a fix. 
-    // test_declareAndRun("Empty array initialized with length zero or less causes fail", array_emptyWithLengthLEQZeroCausesFail);
-    // test_declareAndRun("Setting array item out of bounds causes fail", array_setItemIndexOutOfBoundsCausesFail);
+    test_declareAndRun("Empty array initialized with length zero or less causes fail", array_emptyWithLengthLEQZeroCausesFail);
+    test_declareAndRun("Setting array item out of bounds causes fail", array_setItemIndexOutOfBoundsCausesFail);
     return 0;
 }
