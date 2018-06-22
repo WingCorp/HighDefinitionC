@@ -52,7 +52,8 @@ class SourceFile:
         add_to_build_order(self)
         
         file_names = list(map(lambda path: determine_file_name(path), build_order))
-
+        
+        #Remove duplicate files: compiling the same file twice will cause compiler errors, due to redefining of functions etc.
         dup_indexes = []
         checked_file_names = []
         for index, file_name in enumerate(file_names):
@@ -76,7 +77,7 @@ def determine_build_order(path_to_main):
 def build(path_to_main, output_path):
     print("Building source: '{}' to {}.".format(path_to_main, output_path))    
     build_order = determine_build_order(path_to_main)
-    command = "gcc -Wall -rdynamic " + build_order + " -o " + output_path
+    command = "gcc -Wall -Wextra -rdynamic " + build_order + " -o " + output_path
     print("Running command:", command)
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
