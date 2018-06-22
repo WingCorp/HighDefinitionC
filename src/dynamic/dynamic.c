@@ -1,4 +1,5 @@
 #include "dynamic.h"
+#include "./../fail/fail.h"
 
 Dynamic dbol(bool val)
 {
@@ -37,36 +38,64 @@ Dynamic dref(void* ref)
 
 bool bol(Dynamic dyn)
 {
+    if (dyn.type != BOOL)
+    {
+        failwith("Call to bol() expected Dynamic of type BOOL!");
+    }
     return dyn.value.bol;
 }
 
 char chr(Dynamic dyn)
 {
+    if (dyn.type != CHAR)
+    {
+        failwith("Call to chr() expected Dynamic of type CHAR!");
+    }
     return dyn.value.chr;
 }
 
 int i32(Dynamic dyn)
 {
+    if (dyn.type != INT)
+    {
+        failwith("Call to i32() expected Dynamic of type INT!");
+    }
     return dyn.value.i32;
 }
 
 long i64(Dynamic dyn)
 {
+    if (dyn.type != LONG)
+    {
+        failwith("Call to i64() expected Dynamic of type LONG!");
+    }
     return dyn.value.i64;
 }
 
 float f32(Dynamic dyn)
 {
+    if (dyn.type != FLOAT)
+    {
+        failwith("Call to f32() expected Dynamic of type FLOAT!");
+    }
     return dyn.value.f32;
 }
 
 double f64(Dynamic dyn)
 {
+    if (dyn.type != DOUBLE)
+    {
+        failwith("Call to f64() expected Dynamic of type DOUBLE!");
+    }
     return dyn.value.f64;
 }
 
 void* ref(Dynamic dyn)
 {
+    if (dyn.type != REFERENCE)
+    {
+        failwith("Call to ref() expected Dynamic of type REFERENCE!");
+    }
     return dyn.value.ref;
 }
 

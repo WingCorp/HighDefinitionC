@@ -48,7 +48,7 @@ int assertStringEquals(char* expected, char* actual)
 
 int assertStringContains(char* testString, char* expected)
 {
-    printf("Assertion that string '%s' contained '%s'\x1b[0m was ", testString, expected);
+    printf("Assertion that string '%s\x1b[0m' contained '%s'\x1b[0m was ", testString, expected);
     int contained = strstr(testString, expected) != NULL;
 
     if (contained)

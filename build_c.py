@@ -50,6 +50,20 @@ class SourceFile:
                 add_to_build_order(dep)
             build_order.append(source_file.path)
         add_to_build_order(self)
+        
+        file_names = list(map(lambda path: determine_file_name(path), build_order))
+
+        dup_indexes = []
+        checked_file_names = []
+        for index, file_name in enumerate(file_names):
+            if file_name not in checked_file_names:
+                checked_file_names.append(file_name)
+            else:
+                dup_indexes.append(index)
+        
+        for index in dup_indexes:
+            build_order.pop(index)
+        
         return build_order
 
 def determine_build_order(path_to_main):
@@ -63,6 +77,7 @@ def build(path_to_main, output_path):
     print("Building source: '{}' to {}.".format(path_to_main, output_path))    
     build_order = determine_build_order(path_to_main)
     command = "gcc -Wall -rdynamic " + build_order + " -o " + output_path
+    print("Running command:", command)
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
     if len(output.strip()) > 1:
