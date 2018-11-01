@@ -12,8 +12,8 @@
 
 typedef enum _OptionType
 {
-    SOME,
-    NONE
+    NONE,
+    SOME
 } OptionType;
 
 typedef struct _Option

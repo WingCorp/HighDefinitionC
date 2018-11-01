@@ -6,6 +6,8 @@
 #include "./../../src/fold/fold.h"
 #include "./../../src/map/map.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int list_emptyListReturnsEmpty()
 {
@@ -23,30 +25,26 @@ int list_consExtendsListByOneElement()
         assertIntEquals(1, list_length(consd));
 }
 
-void printdstr(Dynamic dref)
+void printdi32(Dynamic di)
 {
-    printf("Print char pointer dest\n");
-    printf("%s", *((char**) ref(dref)));
+    printf("%d\n", i32(di));
 }
 
 int list_consTwiceIsListOfLengthTwo()
 {
-    // return assertTrue("this test works", false);
     List* list = list_empty();
-    printf("Cons hello on list\n");
-    List* consd1 = list_cons(list, dref(&"Hello, "));
-    printf("Cons world on list\n");
-    List* consd2 = list_cons(consd1, dref(&"World!\n"));
-    printf("Create iterator off list\n");
+    printf("Cons 1 on list\n");
+    List* consd1 = list_cons(list, di32(1));
+    Option consv1 = list_head(consd1);
+    Dynamic consv1Val = consv1.value;
+    printdi32(consv1Val);
+    printf("Cons 2 on list\n");
+    List* consd2 = list_cons(consd1, di32(2));
+    printf("Create iterator of list\n");
     Iterator* it = list_iterator(list);
     printf("Loop through list\n");
-    foreach(it, printdstr);
-    return assertIntEquals(2, list_length(consd2));
-}
-
-void printdi32(Dynamic di)
-{
-    printf("%d\n", i32(di));
+    foreach(it, printdi32);
+    return  assertTrue("condsv1 is Some", consv1.type) && assertIntEquals(2, list_length(consd2));
 }
 
 Dynamic squared(Dynamic di)

@@ -30,17 +30,22 @@ List* list_empty()
 
 List* list_cons(List* list, Dynamic val)
 {
+    printf("Beginning cons by creating new list:\n");
     List* outlist = list_empty();
+    printf("malloc next link:\n");
     Link* link = malloc(sizeof(Link));
+    printf("assign val to link:\n");
     link->value = val;
     if(list->start)
     {
+        printf("Cons move end\n");
         link->prev = list->end;
         link->prev->next = link;
         outlist->start = list->start;
     }
     else
     {
+        printf("Cons to end\n");
         outlist->start = link;
     }
     outlist->end = link;
@@ -179,16 +184,27 @@ List* list_initFromFunc(int size, Dynamic (*initFunc)(int))
 Iterator* list_iterator(List* list)
 {
     int length = list->length;
+    // printf("length: %d\n", length);
+
     int i = 0;
+    // printf("malloc'ing length * sizeof(Dynamic): %lu\n", (length * sizeof(Dynamic)));
     Dynamic* dynArr = malloc(length * sizeof(Dynamic));
+    // printf("Getting list start link: %p\n", list->start);
     Link* currentLink = list->start;
-    while(currentLink->next)
+    // printf("Entering while loop...\n");
+    while(currentLink != NULL && currentLink->next != NULL)
     {
+        // printf("Current link: %p\n", currentLink);
+        // printf("Next link: %p\n", currentLink->next);
+        // printf("Current value at current link: %p\n", (currentLink->value.value.ref));
         Dynamic currentValue = currentLink->value;
         dynArr[i] = currentValue;
         currentLink = currentLink->next;
         i += 1;
     }
-    dynArr[i] = currentLink->value;
+    // printf("finished walking through list\n");
+    if(length > 0){
+        dynArr[i] = currentLink->value;
+    }
     return iterator_init(dynArr, length);
 }
