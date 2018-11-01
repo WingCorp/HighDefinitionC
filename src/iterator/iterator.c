@@ -2,20 +2,45 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef union _Source
+{
+    Dynamic* data;
+    Dynamic (*nextFun)(int);
+} Source;
+
+typedef enum _Type
+{
+    EAGER,
+    LAZY
+} Type;
+
 typedef struct _Iterator
 {
     int position;
     int length;
-    Dynamic* data;
+    Source* source;
+    Type type;
 } Iterator;
 
-Iterator* iterator_init(Dynamic* data, int length)
+Iterator* iterator_init_eager(Dynamic* data, int length)
 {
-    printf("initializing iterator of length: %d\n", length);
     Iterator* iterator = malloc(sizeof(Iterator));
     iterator->position = 0;
     iterator->length = length;
-    iterator->data = data;
+    iterator->type = EAGER;
+    iterator->source = malloc(sizeof(Source));
+    iterator->source->data = data;
+    return iterator;
+}
+
+Iterator* iterator_init_lazy(Dynamic (*nextFun)(int), int length)
+{
+    Iterator* iterator = malloc(sizeof(Iterator));
+    iterator->position = 0;
+    iterator->length = length;
+    iterator->type = LAZY;
+    iterator->source = malloc(sizeof(Source));
+    iterator->source->nextFun = nextFun;
     return iterator;
 }
 
@@ -28,7 +53,14 @@ Option iterator_next(Iterator* iterator)
 {
     if(iterator->position < iterator->length)
     {
-        Dynamic toReturn = iterator->data[iterator->position];
+        Dynamic toReturn;
+        switch(iterator->type)
+        {
+            case EAGER:
+                toReturn = iterator->source->data[iterator->position];
+            case LAZY:
+                toReturn = iterator->source->nextFun(iterator->position);
+        }
         iterator->position += 1;
         return some(toReturn);
     }
@@ -50,6 +82,5 @@ void iterator_reset(Iterator* iterator)
 
 void iterator_destroy(Iterator* iterator)
 {
-    free(iterator->data);
     free(iterator);
 }
