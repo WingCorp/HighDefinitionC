@@ -11,9 +11,19 @@ typedef struct _Iterator Iterator;
  * 
  * @param data The data to iterate from.
  * @param length The length of the data.
- * @return Iterator An iterator struct.
+ * @return Iterator An Iterator struct.
  */
-Iterator* iterator_init(Dynamic* data, int length);
+Iterator* iterator_init_eager(Dynamic* data, int length);
+
+/**
+ * @brief Initializes a new iterator from an int -> Dynamic function.
+ * 
+ * @param nextFun A function that takes the position of the iterator
+ *                and returns the corresponding Dynamic.
+ * @param length The length of the iterator.
+ * @return Iterator* An Iterator struct.
+ */
+Iterator* iterator_init_lazy(Dynamic (*nextFun)(int), int length);
 
 /**
  * @brief Whether an iterator holds another value.
