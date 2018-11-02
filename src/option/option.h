@@ -49,4 +49,13 @@ Option some(Dynamic value);
  */
 Option success(Option opt, Option (*optFunc)(Dynamic));
 
+/**
+ * @brief Coerces an option to its value.
+ *        Might cause a failure, if no value is present.
+ * 
+ * @param opt the option to coerce.
+ * @return Dynamic the value to find;
+ */
+Dynamic coerce(Option opt);
+
 #endif

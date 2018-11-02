@@ -1,4 +1,5 @@
 #include "option.h"
+#include "./../fail/fail.h"
 
 Option none()
 {
@@ -17,4 +18,13 @@ Option success(Option opt, Option (*optFunc)(Dynamic))
         return none();
     }
     return (*optFunc)(opt.value);
+}
+
+Dynamic coerce(Option opt)
+{
+    if (opt.type == NONE)
+    {
+        failwith("Could not coerce value from empty option!\n");
+    }
+    return opt.value;
 }

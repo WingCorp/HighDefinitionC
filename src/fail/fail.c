@@ -6,11 +6,11 @@
 #define RED "\x1b[31m"
 #define RESET "\x1b[0m"
 
-void* callstack[512];
+void* callstack[1024];
 
 void trace_stack()
 {
-    int frames = backtrace(callstack, 512);
+    int frames = backtrace(callstack, 1024);
     char** strs = backtrace_symbols(callstack, frames);
     int i;
     printf(RED);

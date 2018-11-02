@@ -44,40 +44,30 @@ class SourceFile:
                         self.dependencies.append(dep)
 
     def get_build_order(self):
-        build_order = []
+        build_order = list()
         def add_to_build_order(source_file):
             for dep in source_file.dependencies:
                 add_to_build_order(dep)
             build_order.append(source_file.path)
         add_to_build_order(self)
         
-        file_names = list(map(lambda path: determine_file_name(path), build_order))
+        #Convert build_order to absolute paths.
+        build_order_unique = set(map(os.path.abspath, build_order));
         
-        #Remove duplicate files: compiling the same file twice will cause compiler errors, due to redefining of functions etc.
-        dup_indexes = []
-        checked_file_names = []
-        for index, file_name in enumerate(file_names):
-            if file_name not in checked_file_names:
-                checked_file_names.append(file_name)
-            else:
-                dup_indexes.append(index)
-        
-        for index in dup_indexes:
-            build_order.pop(index)
-        
-        return build_order
+        return build_order_unique
 
 def determine_build_order(path_to_main):
     #By definition, a main file, aka any file with a main-method must have references to all dependencies.
     main = SourceFile(path_to_main)
     build_order = main.get_build_order()
+
     build_order = " ".join(build_order)
     return build_order
 
 def build(path_to_main, output_path):
     print("Building source: '{}' to {}.".format(path_to_main, output_path))    
     build_order = determine_build_order(path_to_main)
-    command = "gcc -Wall -Wextra -rdynamic " + build_order + " -o " + output_path
+    command = "gcc -ggdb -pedantic -Wall -Wextra -rdynamic " + build_order + " -o " + output_path
     print("Running command:", command)
     subprocess_args = command.split(' ')
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
