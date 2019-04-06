@@ -7,74 +7,314 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#pragma region INTERPRETER
 
-char** get_words(char* code, int* out_counter)
+#pragma region SCANNER
+
+typedef enum _TokenType
 {
-    size_t len = strlen(code);
+    T_ARROW,  //=>
+    T_LPAR,   //(
+    T_RPAR,   //)
+    T_VAR,    //\w+
+    T_INT,    //\d+
+    T_UINT,   //\d+u
+    T_LONG,   //\d+l
+    T_ULONG,  //\d+ul
+    T_FLOAT, //\d+\.\d?f
+    T_DOUBLE, //\d+\.\d?
+    T_CHAR,   //'
+    T_STRING, //"
+    T_ADD,    //+
+    T_SUB,    //-
+    T_MUL,    //*
+    T_DIV,    // \/
+    T_MOD,    //%
+    T_EQ,     //==
+    T_NE,     //!=
+    T_GT,     //>
+    T_LT,     //<
+    T_GEQ,    //>=
+    T_LEQ,    //<=
+    T_AND,    //&&
+    T_OR,     //||
+    T_NOT,    //!
+    T_BAND,   //&
+    T_BOR,    //|
+    T_XOR,    //^
+    T_COM,    //~
+    T_LEFT,   //<<
+    T_RIGHT,  //>>
+    T_IF,     //?
+    T_ELSE,   //:
+    T_COMMA,  //,
+    T_SC      //;
+} TokenType;
 
-    if (len <= 4)
-    {
-        //Sounds crazy, but the shortest possible lambda, the id lambda is 'x => x'
-        failwith("Cannot create a Lambda with a body shorter than 4 characters.\n");
-    }
-    
-    
-    int word_count = 1;
-    int c;
-    for (c = 0; c < len; c++) 
-    {
-        if (code[c] == ' ')
-        {
-            word_count++;
-        }
-    }
+typedef struct _Token
+{
+    TokenType type;
+    char* var_name;
+    Dynamic dyn_val;
+} Token;
 
-    char** words = malloc(sizeof(char*) * word_count);
-    //Tokens:
-    int saved_words = 0;
-    int latest_word_pos = 0;    
-    for (c = 0; c < len; c++)
+void check_suffix(char suffix, bool second, int pos)
+{
+    if (suffix != 'l' || (!second && (suffix != 'u' || suffix != 'f')))
     {
-        if (code[c] == ' ')
-        {
-            int t;
-            char* word = malloc(sizeof(char) * c);
-            for (t = c - 1; t >= latest_word_pos; t--)
-            {
-                word[t - latest_word_pos] = code[t];
-            }
-            words[saved_words++] = word;
-            latest_word_pos = c + 1;
-        }
+        char msg[255];
+        sprintf(msg, "Unknown suffix at position %d\n", pos);
+        failwith(msg);
     }
-    out_counter[0] = word_count;
-    return words;
 }
 
-char** get_parameters(char** words, int word_count, int* out_counter)
+Token* scan(char* code)
 {
-    int arrow_index = -1;
+    int len = strlen(code);
+    Token* tokens = malloc(sizeof(Token) * len);
+    int t = 0;
     int i;
-    for (i = 0; i < word_count; i++)
+    while (i < len)
     {
-        if (strcmp(words[i], "=>") == 0)
+        char c1 = code[i];
+        char c2 = code[i + 1];
+        if (isblank(c1))
         {
-            arrow_index = i;
-            break;
+            i++;
+            continue;
+        }
+        if (c1 == '=' && c2 == '>')
+        {
+            tokens[t++] = (Token){.type = T_ARROW};
+            i += 2;
+            continue;
+        }
+        if (c1 == '(') 
+        {
+            tokens[t++] = (Token){.type = T_LPAR};
+            i++;
+            continue;
+        }
+        if (c1 == ')') {
+            tokens[t++] = (Token){.type = T_RPAR};
+            i++;
+            continue;
+        }
+        if (isalpha(c1))
+        {
+            int c = 0;
+            while(isalpha(code[i + c])) 
+            {
+                c++;
+            }
+            char* var = malloc((sizeof(char) * c) + 1);
+            var[c] = '\0';
+            int j;
+            for(j = 0; j < c; j++)
+            {
+                var[j] = code[i + j];
+            }
+            tokens[t++] = (Token){.type = T_VAR, .var_name = var};
+            i++;
+            continue;
+        }
+        #pragma region MATCH_DIGIT
+        if (isdigit(c1))
+        {
+            int d = 0;
+            bool floating = false;
+            while(isdigit(code[i + d]) || code[i + d] =='.')
+            {
+                if (code[i + d] == '.') {
+                    floating = true;
+                }
+                d++;
+            }
+            char suffix = '\0';
+            char suffix2 = '\0';
+            if (i + d + 1 < len && isalpha(code[i + d + 1])) {
+                suffix = code[i + d + 1];
+                check_suffix(suffix, false, i + d + 1);
+                
+                if (i + d + 2 < len && isalpha(code[i + d + 2])) {
+                    suffix2 = code[i + d + 1];
+                    check_suffix(suffix2, true, i + d + 2);
+                    d += 2;
+                } else {
+                    d += 1;
+                }
+            }
+            char* number = malloc(sizeof(char) * d);
+            int j;
+            for(j = 0; j < d; j++)
+            {
+                number[j] = code[i + j];
+            }
+            
+            if (floating)
+            {
+                tokens[t++] = (Token) {.type = T_FLOAT, .dyn_val = df64(atof(number))};
+                i++;
+                continue;
+            }
+            if (suffix == '\0' && suffix2 == '\0')
+            {
+                tokens[t++] = (Token) {.type = T_INT, .dyn_val = di32(atoi(number))};
+                i++;
+                continue;
+            }
+            if (suffix == 'u' && suffix2 == 'l')
+            {
+                tokens[t++] = (Token) {.type = T_ULONG, .dyn_val = dui64(atoll(number))};
+                i++;
+                continue;
+            }
+            if (suffix == 'u')
+            {
+                tokens[t++] = (Token) {.type = T_UINT, .dyn_val = dui32(atol(number))};
+                i++;
+                continue;
+            }
+            if (suffix == 'l')
+            {
+                tokens[t++] = (Token) {.type = T_LONG, .dyn_val = di64(atol(number))};
+                i++;
+                continue;
+            }
+            failwith("number format not recognized?");
+        }
+        #pragma endregion MATCH_DIGIT
+        if (c1 == '\'')
+        {
+            tokens[t++] = (Token){.type = T_CHAR };
+            i++;
+            continue;
+        }
+        if (c1 == '"') {
+            tokens[t++] = (Token){.type = T_CHAR };
+            i++;
+            continue;
+        }
+        if (c1 == '+') {
+            tokens[t++] = (Token){.type = T_ADD };
+            i++;
+            continue;
+        }
+        if (c1 == '-') {
+            tokens[t++] = (Token){.type = T_SUB };
+            i++;
+            continue;
+        }
+        if (c1 == '*') {
+            tokens[t++] = (Token){.type = T_MUL };
+            i++;
+            continue;
+        }
+        if (c1 == '/') {
+            tokens[t++] = (Token){.type = T_DIV };
+            i++;
+            continue;
+        }
+        if (c1 == '%') {
+            tokens[t++] = (Token){.type = T_MOD };
+            i++;
+            continue;
+        }
+        if (c1 == '=' && c2 == '=') {
+            tokens[t++] = (Token){.type = T_EQ };
+            i += 2;
+            continue;
+        }
+        if (c1 == '!' && c2 == '=') {
+            tokens[t++] = (Token){.type = T_NE };
+            i += 2;
+            continue;
+        }
+        if (c1 == '>' && c2 == '=') {
+            tokens[t++] = (Token){.type = T_GEQ };
+            i += 2;
+            continue;
+        }
+        if (c1 == '<' && c2 == '=') {
+            tokens[t++] = (Token){.type = T_LEQ };
+            i += 2;
+            continue;
+        }
+        if (c1 == '>' && c2 == '>') {
+            tokens[t++] = (Token){.type = T_RIGHT };
+            i += 2;
+            continue;
+        }
+        if (c1 == '<' && c2 == '<') {
+            tokens[t++] = (Token){.type = T_LEFT };
+            i += 2;
+            continue;
+        }
+        if (c1 == '>') {
+            tokens[t++] = (Token){.type = T_GT };
+            i++;
+            continue;
+        }
+        if (c1 == '<') {
+            tokens[t++] = (Token){.type = T_LT };
+            i++;
+            continue;
+        }
+        if (c1 == '&' && c2 == '&') {
+            tokens[t++] = (Token){.type = T_AND };
+            i += 2;
+            continue;
+        }
+        if (c1 == '|' && c2 == '|') {
+            tokens[t++] = (Token){.type = T_OR };
+            i += 2;
+            continue;
+        }
+        if (c1 == '&') {
+            tokens[t++] = (Token){.type = T_BAND };
+            i++;
+            continue;
+        }
+        if (c1 == '|') {
+            tokens[t++] = (Token){.type = T_BOR };
+            i++;
+            continue;
+        }
+        if (c1 == '^') {
+            tokens[t++] = (Token){.type = T_XOR };
+            i++;
+            continue;
+        }
+        if (c1 == '~') {
+            tokens[t++] = (Token){.type = T_COM };
+            i++;
+            continue;
+        }
+        if (c1 == '?') {
+            tokens[t++] = (Token){.type = T_IF };
+            i++;
+            continue;
+        }
+        if (c1 == ':') {
+            tokens[t++] = (Token){.type = T_ELSE };
+            i++;
+            continue;
+        }
+        if (c1 == ',') {
+            tokens[t++] = (Token){.type = T_COMMA };
+            i++;
+            continue;
+        }
+        if (c1 == ';') {
+            tokens[t++] = (Token){.type = T_SC };
+            i++;
+            continue;
         }
     }
-    if (arrow_index)
-    {
-        failwith("No arrow present in Lambda code");
-    }
-    char** parameters = malloc(sizeof(char*) * arrow_index);
-    for (i = 0; i < arrow_index; i++)
-    {
-        parameters[i] = words[i];
-    }
-    return parameters;
 }
+
+#pragma endregion SCANNER
+
+#pragma region PARSER
 
 typedef enum _ExprType
 {
@@ -150,217 +390,14 @@ typedef struct _Expr
     ExprInstance e;
 } Expr;
 
-#pragma region MATCHERS
+//Nothing here, since we're redesigning the flow to scan -> parse -> compile.
 
-bool is_binop(char* word)
-{
-    // ADD,    //+
-    if (strcmp(word, "+") == 0)
-    {
-        return true;
-    }
-    // SUB,    //-
-    if (strcmp(word, "-") == 0)
-    {
-        return true;
-    }
-    // MUL,    //*
-    if (strcmp(word, "-") == 0)
-    {
-        return true;
-    }
-    // DIV,    //'/'
-    if (strcmp(word, "/") == 0)
-    {
-        return true;
-    }
-    // MOD,    //%
-    if (strcmp(word, "%") == 0)
-    {
-        return true;
-    }
-    // EQ,     //==
-    if (strcmp(word, "==") == 0)
-    {
-        return true;
-    }
-    // NE,     //!=
-    if (strcmp(word, "!=") == 0)
-    {
-        return true;
-    }    
-    // GT,     //>
-    if (strcmp(word, ">") == 0)
-    {
-        return true;
-    }
-    // LT,     //<
-    if (strcmp(word, "<") == 0)
-    {
-        return true;
-    }
-    // GEQ,    //>=
-    if (strcmp(word, ">=") == 0)
-    {
-        return true;
-    }
-    // LEQ,    //<=
-    if (strcmp(word, "<=") == 0)
-    {
-        return true;
-    }
-    // AND,    //&&
-    if (strcmp(word, "&&") == 0)
-    {
-        return true;
-    }
-    // OR,     //||
-    if (strcmp(word, "||") == 0)
-    {
-        return true;
-    }
-    // BAND,   //&
-    if (strcmp(word, "&") == 0)
-    {
-        return true;
-    }
-    // BOR,    //|
-    if (strcmp(word, "|") == 0)
-    {
-        return true;
-    }
-    // XOR,    //^
-    if (strcmp(word, "^") == 0)
-    {
-        return true;
-    }
-    // LEFT,   //<<
-    if (strcmp(word, "<<") == 0)
-    {
-        return true;
-    }
-    // RIGHT,  //>>
-    if (strcmp(word, ">>") == 0)
-    {
-        return true;
-    }
-    return false;
-}
+#pragma endregion PARSER
 
-bool is_unop(char* word)
-{
-    // NOT,    //!
-    if (word[0] == "!") 
-    {
-        return true;
-    }
-    // COM,    //~
-    if (word[0] == "~")
-    {
-        return true;
-    }
-    return false;
-}
+#pragma region INTERPRETER
 
-bool is_term(char* word, int par_lvl)
-{
-    int len = strlen(word);
-    char first = word[0];
-    bool number = 
-        first == '+' || first == '-' || isdigit(first);
-    char last = word[len - 1];
-    if (number) 
-    {
-        return last == 'f' || last == 'l' || last == 'u';
-    }
-    if (word[len - par_lvl - 1] == ')')
-    {
-        return true; //It is a call.
-    }
-    return !is_binop && !is_unop; //It might be a variable.
-}
+#pragma endregion INTERPRETER
 
-#pragma endregion MATCHERS
-
-Expr* parse(int start, int end, int par_lvl, char** words)
-{
-    Expr* expr = malloc(sizeof(Expr));
-    int w;
-    Expr* previous;
-    for (w = 0; w < end; w++)
-    {
-        char* word = words[w];
-        int len = strlen(word);
-        bool begin_par = word[0] == '(';
-        int ws = 0;
-        if (begin_par) {
-            ws++;
-            par_lvl++;
-        }
-
-        Expr* current = malloc(sizeof(Expr));
-        if (is_term(word + ws, par_lvl))
-        {
-            char last = word[len - 1];
-            if (word[0] == '+' || word[0] == '-' || isdigit(last)) 
-            {
-                current->type = DYN;
-                if (word[len - 2] == 'u' && last == 'l')
-                {
-                    unsigned long val = atoll(word);
-                    current->e = (ExprInstance) { .dyn = dui64(val) };
-                    
-                }
-                else if (last == 'f')
-                {
-                    double val = atof(word);
-                    current->e = (ExprInstance) { .dyn = df64(val) };
-                }
-                else if (last == 'l')
-                {
-                    long val = atol(word);
-                    current->e = (ExprInstance) {.dyn = di64(val)};
-                }
-                else if (last == 'u')
-                {
-                    unsigned int val = atol(word);
-                    current->e = (ExprInstance) {.dyn = dui32(val)};
-                }
-                else
-                {
-                    int val = atoi(word);
-                    current->e = (ExprInstance) {.dyn = di32(val)};
-                }
-            }
-            else if (word[len - par_lvl - 1] == ')') 
-            {
-                //It's a call
-                current->type = CALL;
-                //Find the start of the parentheses, parse the parameters.
-
-            }
-            else
-            {
-                current->type = VAR;
-                //Deal with parentheses somehow.
-                current->e = (ExprInstance) {.var = word};
-            } 
-        }
-        if (is_unop(word + ws))
-        {
-            //create the unop
-            current->type = UNOP;            
-            char operator = word[ws];
-            bool in_par = word[ws + 1] == '(';
-            Expr* operand = parse(w + 1, end, in_par, words);
-            Unop unop = (Unop) { .operator = operator, .operand = operand };
-            current->e = (ExprInstance){ .unop = unop};
-            previous = current;
-            continue;
-        }
-        
-    }
-}
 
 Dynamic apply(Lambda* lambda, Dynamic param, ...)
 {
@@ -381,7 +418,6 @@ Dynamic apply(Lambda* lambda, Dynamic param, ...)
     va_end(args);
 }
 
-#pragma endregion INTERPRETER
 
 typedef struct _Lambda
 {
