@@ -18,9 +18,11 @@
  * 
  */
 
-#include "./../dynamic/dynamic.h"
+#include "./../pair/pair.h"
 #include "./../option/option.h"
 #include "./../hash/hash.h"
+
+#include <varargs.h>
 
 typedef struct _Dict Dict;
 
@@ -30,6 +32,20 @@ typedef struct _Dict Dict;
  * @return Dict* 
  */
 Dict* dict_empty();
+
+/**
+ * @brief Creates a dictionary from a set of key-value pairs.
+ * 
+ * @param count The initial size of the dictionary.
+ *              Must correspond to the total amound of pairs in this call.
+ * @param pair A key-value pair, the left side of the pair must be an unsigned long.
+ *             The dictionary uses the HDC hash function, meaning that you can use hash(<your char*>)
+ *             to use strings as keys.
+ *             Otherwise, just build the Dictionary yourself.
+ * @param ... A variable amount of pairs.
+ * @return Dict* A dictionary of the pairs.
+ */
+Dict* dict_from(int count, Pair pair, ...);
 
 /**
  * @brief Determine whether the dictionary contains an entry for the given key.

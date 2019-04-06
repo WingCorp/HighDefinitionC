@@ -16,9 +16,19 @@ Dynamic di32(int val)
     return (Dynamic) { .type = INT, .value = (DynValue) { .i32 = val } };
 }
 
+Dynamic dui32(unsigned int val)
+{
+    return (Dynamic) { .type = UINT, .value = (DynValue) { .ui32 = val } };
+}
+
 Dynamic di64(long val)
 {
     return (Dynamic) { .type = LONG, .value = (DynValue) { .i64 = val } };
+}
+
+Dynamic dui64(unsigned long val)
+{
+    return (Dynamic) { .type = ULONG, .value = (DynValue) { .ui64 = val } };
 }
 
 Dynamic df32(float val)

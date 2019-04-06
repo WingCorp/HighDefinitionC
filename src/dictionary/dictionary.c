@@ -141,3 +141,27 @@ void dict_remove_s(Dict* dict, char* key)
 {
     dict_remove_s(dict, hash(key));
 }
+
+Dict* dict_from(int count, Pair pair, ...)
+{
+    if (pair.left_type != ULONG) {
+        failwith("Left type of every pair must be an unsigned long.");
+    }
+    
+    va_list args;
+    va_start(args, pair);
+
+    Dict* dict = dict_empty();
+    dict_put(dict, ui64(pair.left), pair.right);
+    int i;
+    for (i = 1; i < count; i++)
+    {
+        Pair param = va_arg(args, Pair);
+        if (param.left_type != ULONG) {
+            failwith("Left type of every pair must be an unsigned long.");
+        }
+        dict_put(dict, ui64(param.left), param.right);
+    }
+    va_end(args);
+    return dict;
+}
