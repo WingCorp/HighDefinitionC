@@ -68,6 +68,6 @@ void* ref(Dynamic dyn);
  * @param dyn the dynamic to retrieve the value from.
  * @return void* a pointer to whatever value we've recovered.
  */
-void* val(Dynamic dyn);
+void* force(Dynamic dyn);
 
 #endif

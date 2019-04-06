@@ -99,7 +99,7 @@ void* ref(Dynamic dyn)
     return dyn.value.ref;
 }
 
-void* val(Dynamic dyn)
+void* force(Dynamic dyn)
 {
     void* toReturn;
     switch(dyn.type)

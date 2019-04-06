@@ -2,6 +2,7 @@
 #include "./../assert.h"
 #include "./../test.h"
 #include <string.h>
+#include <stdio.h>
 
 int dynamic_int32CreatesDynamic()
 {

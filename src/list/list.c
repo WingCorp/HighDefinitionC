@@ -25,6 +25,8 @@ List* list_empty()
 {
     List* listRef = malloc(sizeof(List));
     listRef->length = 0;
+    listRef->start = NULL;
+    listRef->end = NULL;
     return listRef;
 }
 

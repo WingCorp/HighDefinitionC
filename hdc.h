@@ -9,3 +9,7 @@
  * 
  */
 
+#include <inttypes.h>
+
+#define int int32_t
+#define long int64_t
