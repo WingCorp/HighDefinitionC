@@ -15,13 +15,8 @@ typedef enum _TokenType
     T_ARROW,  //=>
     T_LPAR,   //(
     T_RPAR,   //)
-    T_VAR,    //\w+
-    T_INT,    //\d+
-    T_UINT,   //\d+u
-    T_LONG,   //\d+l
-    T_ULONG,  //\d+ul
-    T_FLOAT, //\d+\.\d?f
-    T_DOUBLE, //\d+\.\d?
+    T_NAME,    //\w+
+    T_NUMBER,
     T_CHAR,   //'
     T_STRING, //"
     T_ADD,    //+
@@ -53,11 +48,13 @@ typedef enum _TokenType
 typedef struct _Token
 {
     TokenType type;
-    char* var_name;
-    Dynamic dyn_val;
+    char* name;
+    char* string;
+    char single_char;
+    Dynamic dyn;
 } Token;
 
-void check_suffix(char suffix, bool second, int pos)
+void checkSuffix(char suffix, bool second, int pos)
 {
     if (suffix != 'l' || (!second && (suffix != 'u' || suffix != 'f')))
     {
@@ -99,6 +96,37 @@ Token* scan(char* code)
             i++;
             continue;
         }
+        if (c1 == '\'')
+        {
+            tokens[t++] = (Token){.type = T_CHAR, .single_char = c2 };
+            if(code[c2 + 1] != '\'')
+            {
+                failwith("`char` values must consist of a single char");
+            }
+            i += 3; //Skip the char and the closing char sign.
+            continue;
+        }
+        if (c1 == '"') {
+            int len = 0;
+            while(isalpha(code[c2 + len])){
+                len++;
+            }
+            if (len == 0)
+            {
+                tokens[t++] = (Token){.type = T_STRING, .string = ""};
+                i++;
+                continue;
+            }
+            char* string = malloc(sizeof(char) * len);
+            int i;
+            for (i = 0; i < len; i++)
+            {
+                string[i] = code[c2 + i];
+            }
+            tokens[t++] = (Token){.type = T_STRING, .string = string };
+            i += len + 1; //Remember to skip the " at the end.
+            continue;
+        }
         if (isalpha(c1))
         {
             int c = 0;
@@ -113,7 +141,7 @@ Token* scan(char* code)
             {
                 var[j] = code[i + j];
             }
-            tokens[t++] = (Token){.type = T_VAR, .var_name = var};
+            tokens[t++] = (Token){.type = T_NAME, .name = var};
             i++;
             continue;
         }
@@ -133,11 +161,11 @@ Token* scan(char* code)
             char suffix2 = '\0';
             if (i + d + 1 < len && isalpha(code[i + d + 1])) {
                 suffix = code[i + d + 1];
-                check_suffix(suffix, false, i + d + 1);
+                checkSuffix(suffix, false, i + d + 1);
                 
                 if (i + d + 2 < len && isalpha(code[i + d + 2])) {
                     suffix2 = code[i + d + 1];
-                    check_suffix(suffix2, true, i + d + 2);
+                    checkSuffix(suffix2, true, i + d + 2);
                     d += 2;
                 } else {
                     d += 1;
@@ -152,48 +180,37 @@ Token* scan(char* code)
             
             if (floating)
             {
-                tokens[t++] = (Token) {.type = T_FLOAT, .dyn_val = df64(atof(number))};
+                tokens[t++] = (Token) {.type = T_NUMBER, .dyn = df64(atof(number))};
                 i++;
                 continue;
             }
             if (suffix == '\0' && suffix2 == '\0')
             {
-                tokens[t++] = (Token) {.type = T_INT, .dyn_val = di32(atoi(number))};
+                tokens[t++] = (Token) {.type = T_NUMBER, .dyn = di32(atoi(number))};
                 i++;
                 continue;
             }
             if (suffix == 'u' && suffix2 == 'l')
             {
-                tokens[t++] = (Token) {.type = T_ULONG, .dyn_val = dui64(atoll(number))};
+                tokens[t++] = (Token) {.type = T_NUMBER, .dyn = dui64(atoll(number))};
                 i++;
                 continue;
             }
             if (suffix == 'u')
             {
-                tokens[t++] = (Token) {.type = T_UINT, .dyn_val = dui32(atol(number))};
+                tokens[t++] = (Token) {.type = T_NUMBER, .dyn = dui32(atol(number))};
                 i++;
                 continue;
             }
             if (suffix == 'l')
             {
-                tokens[t++] = (Token) {.type = T_LONG, .dyn_val = di64(atol(number))};
+                tokens[t++] = (Token) {.type = T_NUMBER, .dyn = di64(atol(number))};
                 i++;
                 continue;
             }
             failwith("number format not recognized?");
         }
         #pragma endregion MATCH_DIGIT
-        if (c1 == '\'')
-        {
-            tokens[t++] = (Token){.type = T_CHAR };
-            i++;
-            continue;
-        }
-        if (c1 == '"') {
-            tokens[t++] = (Token){.type = T_CHAR };
-            i++;
-            continue;
-        }
         if (c1 == '+') {
             tokens[t++] = (Token){.type = T_ADD };
             i++;
@@ -309,6 +326,7 @@ Token* scan(char* code)
             i++;
             continue;
         }
+        i++;
     }
 }
 
@@ -351,6 +369,7 @@ typedef struct _Expr Expr;
 typedef struct _Call
 {
     char* name;
+    int parameter_count;
     Expr* parameters;
 } Call;
 
@@ -392,12 +411,158 @@ typedef struct _Expr
 
 //Nothing here, since we're redesigning the flow to scan -> parse -> compile.
 
+bool topExpr(Expr* topExpr, Token* tokens, int* pos);
+
+bool atExpr(Expr* outExpr, Token* tokens, int* pos)
+{
+    Token token = tokens[*pos];
+    TokenType t = token.type;
+    if (t == T_NUMBER)
+    {
+        outExpr->type = DYN;
+        outExpr->e = (ExprInstance) {.dyn = token.dyn};
+        (*pos)++;
+        return true;
+    }
+    if (t == T_CHAR)
+    {
+        outExpr->type = DYN;
+        outExpr->e = (ExprInstance){.dyn = dchr(token.single_char)};
+        (*pos)++;
+        return true;
+    }
+    if (t == T_STRING)
+    {
+        outExpr->type = DYN;
+        outExpr->e = (ExprInstance){.dyn = dref(token.string)};
+        (*pos)++;
+        return true;
+    }
+    Token next = tokens[(*pos) + 1];
+    if (t == T_NAME && next.type == T_LPAR)
+    {
+        int p = 1;
+        int depth = 0;
+        while (true)
+        {
+            Token n = tokens[(*pos) + p];
+            if (n.type == T_LPAR && depth == 0)
+            {
+                break;
+            } 
+            else 
+            {
+                depth++;
+            }
+            if (n.type == T_COMMA)
+            {
+                continue;
+            }
+            p++;
+        }
+        Expr* parameters = malloc(sizeof(Expr) * (p) - 1);        
+        int pc;
+        int* ahead = malloc(sizeof(int));
+        for (pc = 1; pc <= p; pc++)
+        {
+            Token n = tokens[(*pos) + p];
+            if (n.type == T_COMMA || n.type == T_LPAR || n.type == T_RPAR) 
+            {
+                continue;
+            }
+            *ahead = (*pos) + pc;
+            topExpr(&(parameters[pc - 1]), tokens, ahead);
+        }
+        outExpr->type = CALL;
+        outExpr->e = (ExprInstance) 
+        { 
+            .call = (Call)
+            {   
+                .name = token.name,
+                .parameter_count = p,
+                .parameters = parameters
+            } 
+        };
+        (*pos) = (*ahead);
+        free(ahead);
+        return true;
+    }
+    if (t == T_NAME)
+    {
+        outExpr->type = VAR;
+        outExpr->e = (ExprInstance) {.var = token.name};
+        (*pos)++;
+        return true;
+    }
+    if (t == T_LPAR)
+    {
+        int* ahead = malloc(sizeof(int));
+        *ahead = (*pos) + 1;
+        topExpr(outExpr, tokens, ahead);
+        (*pos) += 2; //Skip the (last) RPAR
+        free(ahead);
+        return true;
+    }
+    return false;
+}
+
+bool peek(Token* tokens, int* pos, Token* expected)
+{
+    //IF THE SEQUENCEOF THE TOKENS MATCHES, RETURN TRUE.
+}
+
+bool topExpr(Expr* topExpr, Token* tokens, int* pos)
+{
+    Token token = tokens[*pos];
+    TokenType t = token.type;
+    while(t != T_SC) {
+        Expr* parsedExpr = malloc(sizeof(Expr));
+        if (atExpr(parsedExpr, tokens, pos))
+        {
+            return true;
+        }
+        //ELSE, PEEK AHEAD.
+        //WE NEED A PEEK FUNCTION
+        else if (t == T_IF)
+        {
+            //PARSE TERNARY EXPRESSION
+        }
+        else if (t == T_SUB)
+        {
+            //PARSE UNARY MINUS
+        }
+        else if (t == T_OR) {
+
+        }
+    }
+    return topExpr;
+}
+
+Expr* parse(Token* tokens)
+{
+    checkTokens(tokens);
+    Expr* expr = malloc(sizeof(Expr));
+    int* pos = malloc(sizeof(int));
+    pos[0] = 0;
+    if (topExpr(expr, tokens, pos)) {
+        return expr;
+    }
+    failwith("Unknown parser error.");
+} 
+
 #pragma endregion PARSER
 
 #pragma region INTERPRETER
 
 #pragma endregion INTERPRETER
 
+typedef struct _Lambda
+{
+    Expr* expression;
+    int param_count;
+    char** parameters;
+    Dict* environment;
+} Lambda;
 
 Dynamic apply(Lambda* lambda, Dynamic param, ...)
 {
@@ -414,18 +579,28 @@ Dynamic apply(Lambda* lambda, Dynamic param, ...)
     {
         dict_put_s(env, parameters[i], va_arg(args, Dynamic));
     }
+    //Add dynamic methods:
+    dict_put_s(env, "i32", dref(i32));
+    dict_put_s(env, "i64", dref(i64));
+    dict_put_s(env, "f32", dref(f64)); //I'm so sorry for lying.
+    dict_put_s(env, "f64", dref(f64));
+    dict_put_s(env, "ui32", dref(ui32));
+    dict_put_s(env, "ui64", dref(ui64));
+    dict_put_s(env, "bol", dref(bol));
+    dict_put_s(env, "chr", dref(chr));
+    dict_put_s(env, "ref", dref(ref));
+    dict_put_s(env, "di32", dref(di32));
+    dict_put_s(env, "di64", dref(di64));
+    dict_put_s(env, "df32", dref(df64)); //I'm still sorry.
+    dict_put_s(env, "df64", dref(df64));
+    dict_put_s(env, "dui32", dref(dui32));
+    dict_put_s(env, "dui64", dref(dui64));
+    dict_put_s(env, "dbol", dref(dbol));
+    dict_put_s(env, "dchr", dref(dchr));
+    dict_put_s(env, "dref", dref(dref));
 
     va_end(args);
 }
-
-
-typedef struct _Lambda
-{
-    Expr* expression;
-    int param_count;
-    char** parameters;
-    Dict* environment;
-} Lambda;
 
 Lambda* lambda(char* code, Dict* environment)
 {
