@@ -10,6 +10,8 @@
 
 #include <stdbool.h>
 
+typedef struct _Dynamic Dynamic;
+
 typedef enum _DynType 
 {
     BOOL,
@@ -20,8 +22,15 @@ typedef enum _DynType
     ULONG,
     FLOAT,
     DOUBLE,
-    REFERENCE
+    REFERENCE,
+    PAIR
 } DynType;
+
+typedef struct _Pair
+{
+    Dynamic* left;
+    Dynamic* right;
+} Pair;
 
 typedef union _DynValue
 {
@@ -34,6 +43,7 @@ typedef union _DynValue
     float f32;
     double f64;
     void* ref;
+    Pair pair;
 } DynValue;
 
 typedef struct _Dynamic
@@ -41,6 +51,48 @@ typedef struct _Dynamic
     DynType type;
     DynValue value;
 } Dynamic;
+
+/**
+ * @brief Creates a new pair from two dynamic values.
+ * 
+ * @param left The left value.
+ * @param right The right value.
+ * @return Pair The constructed pair.
+ */
+Dynamic pair(Dynamic left, Dynamic right);
+
+/**
+ * @brief Get the first value (leftmost) stored in a pair.
+ * 
+ * @param pair The pair.
+ * @return Dynamic The first value.
+ */
+Dynamic fst(Dynamic pair);
+
+/**
+ * @brief Returns the type of the first value of the pair.
+ * 
+ * @param pair The pair.
+ * @return DynType The type of the first value.
+ */
+DynType t_fst(Dynamic pair);
+
+/**
+ * @brief Get the second value (rightmost) stored in a pair.
+ * 
+ * @param pair The pair.
+ * @return Dynamic The second value.
+ */
+Dynamic snd(Dynamic pair);
+
+/**
+ * @brief Return the type of the second value of the pair.
+ * 
+ * @param pair The pair.
+ * @return DynType The type of the second value.
+ */
+DynType t_snd(Dynamic pair);
+
 
 Dynamic dbol(bool val);
 Dynamic dchr(char val);
@@ -66,14 +118,12 @@ float f32(Dynamic dyn);
 double f64(Dynamic dyn);
 void* ref(Dynamic dyn);
 
-
 /**
- * @brief Returns a pointer to whatever value is stored in the dynamic.
- * Useful, if you don't know what's inside the dynamic, which is not the way to use Dynamics.
+ * @brief Delete a dynamic if it is on the heap.
+ *        Frees the memory held by a dynamic reference or a dynamic pair.
  * 
- * @param dyn the dynamic to retrieve the value from.
- * @return void* a pointer to whatever value we've recovered.
+ * @param dyn A dynamic holding a reference or a pair-dynamic.
  */
-void* force(Dynamic dyn);
+void delete(Dynamic dyn);
 
 #endif

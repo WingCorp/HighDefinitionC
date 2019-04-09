@@ -1,5 +1,8 @@
 #include "dictionary.h"
 #include "./../fail/fail.h"
+#include "./../dynamic/dynamic.h"
+#include "./../option/option.h"
+#include "./../hash/hash.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -41,6 +44,14 @@ void resize(Dict* dict, int newCapacity)
     Dynamic* newValues = realloc(dict->values, newCapacity * sizeof(Dynamic));
     unsigned long* oldKeys = dict->keys;
     Dynamic* oldValues = dict->values;
+    int cap = dict->capacity;
+    int i;
+    for (i = 0; i < cap; i++)
+    {
+        newKeys[i] = oldKeys[i];
+        newValues[i] = oldValues[i];
+    }
+    dict->capacity = newCapacity;
 }
 
 void dict_put(Dict* dict, unsigned long key, Dynamic value)
@@ -52,7 +63,7 @@ void dict_put(Dict* dict, unsigned long key, Dynamic value)
     int i;
     for(i = key % dict->capacity; /* stops when succesful */; i = (i + 1) % dict->capacity)
     {
-        if (dict->keys[i] != NULL) 
+        if (dict->keys[i] != 0ul) 
         {
             continue;
         }
@@ -100,7 +111,7 @@ void dict_remove_destroy(Dict* dict, unsigned long key, void (*destroyer)(Dynami
     {
         if (dict->keys[i] == key)
         {
-            dict->keys[i] = NULL;
+            dict->keys[i] = 0ul;
             destroyer(dict->values[i]);
             dict->values = NULL;
         }
@@ -119,12 +130,12 @@ void default_destroyer(Dynamic d) {
 
 void dict_remove(Dict* dict, unsigned long key)
 {
-    return dict_remove_destroy(dict, key, default_destroyer);
+    dict_remove_destroy(dict, key, default_destroyer);
 }
 
 Option dict_get_s(Dict* dict, char* key)
 {
-    dict_get(dict, hash(key));
+    return dict_get(dict, hash(key));
 }
 
 bool dict_contains_s(Dict* dict, char* key)
@@ -139,12 +150,12 @@ void dict_put_s(Dict* dict, char* key, Dynamic val)
 
 void dict_remove_s(Dict* dict, char* key)
 {
-    dict_remove_s(dict, hash(key));
+    dict_remove(dict, hash(key));
 }
 
-Dict* dict_from(int count, Pair pair, ...)
+Dict* dict_from(int count, Dynamic pair, ...)
 {
-    if (pair.left_type != ULONG) {
+    if (t_fst(pair) != ULONG) {
         failwith("Left type of every pair must be an unsigned long.");
     }
     
@@ -152,15 +163,15 @@ Dict* dict_from(int count, Pair pair, ...)
     va_start(args, pair);
 
     Dict* dict = dict_empty();
-    dict_put(dict, ui64(pair.left), pair.right);
+    dict_put(dict, ui64(fst(pair)), snd(pair));
     int i;
     for (i = 1; i < count; i++)
     {
-        Pair param = va_arg(args, Pair);
-        if (param.left_type != ULONG) {
+        Dynamic param = va_arg(args, Dynamic);
+        if (t_fst(param) != ULONG) {
             failwith("Left type of every pair must be an unsigned long.");
         }
-        dict_put(dict, ui64(param.left), param.right);
+        dict_put(dict, ui64(fst(param)), snd(param));
     }
     va_end(args);
     return dict;

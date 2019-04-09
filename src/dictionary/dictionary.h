@@ -18,11 +18,11 @@
  * 
  */
 
-#include "./../pair/pair.h"
+#include "./../dynamic/dynamic.h"
 #include "./../option/option.h"
 #include "./../hash/hash.h"
 
-#include <varargs.h>
+#include <stdarg.h>
 
 typedef struct _Dict Dict;
 
@@ -45,7 +45,7 @@ Dict* dict_empty();
  * @param ... A variable amount of pairs.
  * @return Dict* A dictionary of the pairs.
  */
-Dict* dict_from(int count, Pair pair, ...);
+Dict* dict_from(int count, Dynamic pair, ...);
 
 /**
  * @brief Determine whether the dictionary contains an entry for the given key.

@@ -1,6 +1,8 @@
 #include "dynamic.h"
 #include "./../fail/fail.h"
 
+#include <stdlib.h>
+
 Dynamic dbol(bool val)
 {
     return (Dynamic) { .type = BOOL, .value = (DynValue) { .chr = val } };
@@ -46,6 +48,64 @@ Dynamic dref(void* ref)
     return (Dynamic) { .type = REFERENCE, .value = (DynValue) { .ref = ref } };
 }
 
+Dynamic pair(Dynamic left, Dynamic right)
+{
+    Dynamic* lp = malloc(sizeof(Dynamic));
+    lp->type = left.type;
+    lp->value = left.value;
+    Dynamic* rp = malloc(sizeof(Dynamic));
+    rp->type = right.type;
+    rp->value = right.value;
+    return (Dynamic) 
+    { 
+        .type = PAIR, 
+        .value = (DynValue) 
+        { 
+            .pair = (Pair)
+            { 
+                .left = lp,
+                .right = rp
+            } 
+        }
+    };
+}
+
+Dynamic fst(Dynamic pair)
+{
+    if (pair.type != PAIR)
+    {
+        failwith("Call to fst() expected Dynamic of type PAIR!");
+    }
+    return (*pair.value.pair.left);
+}
+
+DynType t_fst(Dynamic pair)
+{
+    if (pair.type != PAIR)
+    {
+        failwith("Call to t_fst() expected Dynamic of type PAIR!");
+    }
+    return pair.value.pair.left->type;
+}
+
+Dynamic snd(Dynamic pair)
+{
+    if (pair.type != PAIR)
+    {
+        failwith("Call to snd() expected Dynamic of type PAIR!");
+    }
+    return (*pair.value.pair.right);
+}
+
+DynType t_snd(Dynamic pair)
+{
+    if (pair.type != PAIR)
+    {
+        failwith("Call to t_snd() expected Dynamic of type PAIR!");
+    }
+    return pair.value.pair.right->type;
+}
+
 bool bol(Dynamic dyn)
 {
     if (dyn.type != BOOL)
@@ -73,6 +133,15 @@ int i32(Dynamic dyn)
     return dyn.value.i32;
 }
 
+unsigned int ui32(Dynamic dyn)
+{
+    if (dyn.type != UINT)
+    {
+        failwith("Call to ui32() expected Dynamic of type UINT!");
+    }
+    return dyn.value.ui32;
+}
+
 long i64(Dynamic dyn)
 {
     if (dyn.type != LONG)
@@ -80,6 +149,15 @@ long i64(Dynamic dyn)
         failwith("Call to i64() expected Dynamic of type LONG!");
     }
     return dyn.value.i64;
+}
+
+unsigned long ui64(Dynamic dyn)
+{
+    if (dyn.type != ULONG)
+    {
+        failwith("Call to ui64() expected Dynamic of type ULONG!");
+    }
+    return dyn.value.ui64;
 }
 
 float f32(Dynamic dyn)
@@ -109,32 +187,16 @@ void* ref(Dynamic dyn)
     return dyn.value.ref;
 }
 
-void* force(Dynamic dyn)
+void delete(Dynamic dyn)
 {
-    void* toReturn;
-    switch(dyn.type)
-    {
-        case BOOL:
-            toReturn = &(dyn.value.bol);
-            break;
-        case CHAR:
-            toReturn = &(dyn.value.chr);
-            break;
-        case INT:
-            toReturn = &(dyn.value.i32);
-            break;
-        case LONG:
-            toReturn = &(dyn.value.i64);
-            break;
-        case FLOAT:
-            toReturn = &(dyn.value.f32);
-            break;
-        case DOUBLE:
-            toReturn = &(dyn.value.f64);
-            break;
-        case REFERENCE:
-            toReturn = dyn.value.ref;
-            break;
+    if (dyn.type != REFERENCE || dyn.type != PAIR) {
+        failwith("Call to delete() expected Dynamic of type REFERENCE or PAIR!");
     }
-    return toReturn;
+    if (dyn.type == REFERENCE) {
+        free(dyn.value.ref);
+    }
+    if (dyn.type == PAIR) {
+        free(dyn.value.pair.left);
+        free(dyn.value.pair.right);
+    }
 }

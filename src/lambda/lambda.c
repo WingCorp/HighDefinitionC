@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <varargs.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
 
