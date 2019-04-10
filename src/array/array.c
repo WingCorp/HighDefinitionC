@@ -66,7 +66,7 @@ void array_setItem(Array* array, int index, Dynamic value)
 
 Iterator* array_iterator(Array* array)
 {
-    return iterator_init(array->data, array->length);
+    return iterator_init_eager(array->data, array->length);
 }
 
 Array* array_initFromIterator(Iterator* it)

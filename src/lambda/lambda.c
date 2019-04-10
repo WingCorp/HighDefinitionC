@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <ctype.h>
 
+/*
+    You can bet that I started missing my buggy list implementation when I got to this part.
+ */
 
 #pragma region SCANNER
 
@@ -439,7 +442,7 @@ bool atExpr(Expr* outExpr, Token* tokens, int* pos)
         return true;
     }
     Token next = tokens[(*pos) + 1];
-    if (t == T_NAME && next.type == T_LPAR)
+    if (t == T_NAME && next.type == T_LPAR) //This is a CALL!
     {
         int p = 1;
         int depth = 0;
@@ -506,12 +509,30 @@ bool atExpr(Expr* outExpr, Token* tokens, int* pos)
     return false;
 }
 
-bool peek(Token* tokens, int* pos, Token* expected)
+bool unop(Expr* expr, char operator, Token* tokens, int* pos)
 {
-    //IF THE SEQUENCEOF THE TOKENS MATCHES, RETURN TRUE.
+    int* ahead = malloc(sizeof(int));
+    *ahead = (*pos) + 1;
+    Expr* operand = malloc(sizeof(Expr));
+    topExpr(operand, tokens, ahead);
+    expr = malloc(sizeof(Expr));
+    expr->type = UNOP;
+    expr->e = (ExprInstance) { .unop = (Unop) { .operator = operator, .operand = operand } };
+    free(ahead);
+    return true;
 }
 
-bool topExpr(Expr* topExpr, Token* tokens, int* pos)
+bool binop(Expr* expr, char operator, Token* tokens, int* pos)
+{
+    int* ahead = malloc(sizeof(int));
+    *ahead = (*pos) - 1;
+    Expr* left = malloc(sizeof(Expr));
+    topExpr(left, tokens, ahead);
+    //FUCK, I can't go back.
+    return false;
+}
+
+bool topExpr(Expr* expr, Token* tokens, int* pos)
 {
     Token token = tokens[*pos];
     TokenType t = token.type;
@@ -519,23 +540,37 @@ bool topExpr(Expr* topExpr, Token* tokens, int* pos)
         Expr* parsedExpr = malloc(sizeof(Expr));
         if (atExpr(parsedExpr, tokens, pos))
         {
+            expr = parsedExpr;
             return true;
         }
         //ELSE, PEEK AHEAD.
         //WE NEED A PEEK FUNCTION
-        else if (t == T_IF)
+        else if (t == T_IF) //Parse ternary expression
         {
-            //PARSE TERNARY EXPRESSION
+            Expr* boolExpr = malloc(sizeof(Expr));
+            Expr* trueExpr = malloc(sizeof(Expr));
+            Expr* falseExpr = malloc(sizeof(Expr));
+            int* ahead = malloc(sizeof(int));
+            *ahead = (*pos) + 1;
+            topExpr(boolExpr, tokens, ahead);
+            *ahead = (*ahead) + 2; //Skip the ':'
+            topExpr(trueExpr, tokens, ahead);
+            *ahead = (*ahead) + 1;
+            topExpr(falseExpr, tokens, ahead);
+            expr->type = TERN;
+            expr->e = (ExprInstance) { .tern = (Tern) { .bExpr = boolExpr, .trueExpr = trueExpr, .falseExpr = falseExpr } };
+            free(ahead);
+            return true;
         }
-        else if (t == T_SUB)
+        else if (t == T_SUB && unop(expr, '-', tokens, pos))
         {
-            //PARSE UNARY MINUS
+            return true;
         }
-        else if (t == T_OR) {
-
+        else if (t == T_OR && binop) {
+            
         }
     }
-    return topExpr;
+    return expr;
 }
 
 Expr* parse(Token* tokens)

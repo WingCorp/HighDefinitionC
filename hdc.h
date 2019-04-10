@@ -14,8 +14,7 @@
 
 #include <inttypes.h>
 
-#define int int32_t
-#define long int64_t
+#define long long long
 
 #include "src/fail/fail.h"
 #include "src/math/math.h"
@@ -26,7 +25,6 @@
 #include "src/iterator/iterator.h"
 #include "src/foreach/foreach.h"
 #include "src/map/map.h"
-#include "src/map2/map2.h"
 #include "src/fold/fold.h"
 #include "src/array/array.h"
 #include "src/stack/stack.h"
@@ -34,7 +32,5 @@
 #include "src/dictionary/dictionary.h"
 #include "src/tree/tree.h"
 #include "src/set/set.h"
-
-
 
 #endif

@@ -12,5 +12,5 @@ Iterator* map(Iterator* ite, Dynamic (*mapper) (Dynamic))
         i += 1;
     }
     iterator_reset(ite);
-    return iterator_init(mappedValues, size);
+    return iterator_init_eager(mappedValues, size);
 }

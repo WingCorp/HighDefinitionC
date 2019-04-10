@@ -35,7 +35,7 @@ Set* set_empty();
  * @param initFun A function that takes an integer and returns a Set item.
  * @return Set* A new Set.
  */
-Set* set_init(int size, Comparable *(initFun)(int));
+Set* set_initFun(int size, Comparable *(initFun)(int));
 
 /**
  * @brief Initialize a Set with an iterator of comparable values.

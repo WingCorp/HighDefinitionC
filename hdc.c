@@ -1,2 +1,6 @@
 #include "hdc.h"
-//This file is just a placeholder.
+
+int main()
+{
+    //Write your code here!
+}

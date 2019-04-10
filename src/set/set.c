@@ -23,7 +23,7 @@ bool set_contains(Set* set, Comparable item)
     return tree_contains(set->tree, item);
 }
 
-Set* set_init(int size, Comparable *(initFun)(int))
+Set* set_initFun(int size, Comparable *(initFun)(int))
 {
     Set* set = set_empty();
     int i;

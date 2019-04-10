@@ -52,7 +52,7 @@ class SourceFile:
         add_to_build_order(self)
         
         #Convert build_order to absolute paths.
-        build_order_unique = set(map(os.path.abspath, build_order));
+        build_order_unique = set(map(os.path.abspath, build_order))
         
         return build_order_unique
 
@@ -60,13 +60,11 @@ def determine_build_order(path_to_main):
     #By definition, a main file, aka any file with a main-method must have references to all dependencies.
     main = SourceFile(path_to_main)
     build_order = main.get_build_order()
-
-    build_order = " ".join(build_order)
     return build_order
 
 def build(path_to_main, output_path):
     print("Building source: '{}' to {}.".format(path_to_main, output_path))    
-    build_order = determine_build_order(path_to_main)
+    build_order = " ".join(determine_build_order(path_to_main))
     command = "gcc -ggdb -pedantic -Wall -Wextra -rdynamic " + build_order + " -o " + output_path
     print("Running command:", command)
     subprocess_args = command.split(' ')

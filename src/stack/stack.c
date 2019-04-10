@@ -97,7 +97,7 @@ void stack_trim(Stack* stack)
 
 Iterator* stack_iterator(Stack* stack)
 {
-    return iterator_init(stack->dynamics, stack->size);
+    return iterator_init_eager(stack->dynamics, stack->size);
 }
 
 Stack* stack_map(Stack* stack, Dynamic (*mapper) (Dynamic))
