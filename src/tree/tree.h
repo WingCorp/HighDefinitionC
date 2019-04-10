@@ -14,6 +14,7 @@
 
 #include "./../comparable/comparable.h"
 #include "./../option/option.h"
+#include "./../iterator/iterator.h"
 
 typedef struct _Tree Tree;
 
@@ -85,6 +86,14 @@ void tree_print(Tree* tree);
  * @return false The key is not present in the tree.
  */
 bool tree_contains(Tree* tree, Comparable key);
+
+/**
+ * @brief Returns an ordered iterator from the tree.
+ * 
+ * @param tree The tree to create the iterator from.
+ * @return Iterator* An ordered iterator.
+ */
+Iterator* tree_iterator(Tree* tree);
 
 #endif
 

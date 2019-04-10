@@ -8,7 +8,7 @@
  *
  * @brief A hash-table style dictionary.
  * 
- * Capable of storing by string.
+ * Capable of storing by unsigned long or string.
  * Useful for storing dynamics.
  * 
  * @version 0.1

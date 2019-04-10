@@ -32,22 +32,22 @@ List* list_empty()
 
 List* list_cons(List* list, Dynamic val)
 {
-    printf("Beginning cons by creating new list:\n");
+    // printf("Beginning cons by creating new list:\n");
     List* outlist = list_empty();
-    printf("malloc next link:\n");
+    // printf("malloc next link:\n");
     Link* link = malloc(sizeof(Link));
-    printf("assign val to link:\n");
+    // printf("assign val to link:\n");
     link->value = val;
     if(list->start)
     {
-        printf("Cons move end\n");
+        // printf("Cons move end\n");
         link->prev = list->end;
         link->prev->next = link;
         outlist->start = list->start;
     }
     else
     {
-        printf("Cons to end\n");
+        // printf("Cons to end\n");
         outlist->start = link;
     }
     outlist->end = link;
@@ -208,5 +208,5 @@ Iterator* list_iterator(List* list)
     if(length > 0){
         dynArr[i] = currentLink->value;
     }
-    return iterator_init(dynArr, length);
+    return iterator_init_eager(dynArr, length);
 }

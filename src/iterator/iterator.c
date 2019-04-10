@@ -58,8 +58,10 @@ Option iterator_next(Iterator* iterator)
         {
             case EAGER:
                 toReturn = iterator->source->data[iterator->position];
+                break;
             case LAZY:
                 toReturn = iterator->source->nextFun(iterator->position);
+                break;
         }
         iterator->position += 1;
         return some(toReturn);

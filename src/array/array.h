@@ -75,7 +75,7 @@ Iterator* array_iterator(Array* array);
 /**
  * @brief Creates a new array from an iterator (consumes the iterator).
  * 
- * @param it the iterator to create the list from.
+ * @param it the iterator to create the array from.
  * @return Array* 
  */
 Array* array_initFromIterator(Iterator* it);
@@ -87,7 +87,7 @@ Array* array_initFromIterator(Iterator* it);
  * @param initFunc function that inserts dynamic values into the array, based on the index.
  * @return Array* the new array.
  */
-Array* list_initFromFunc(int length, Dynamic (*initFunc)(int));
+Array* array_initFromFunc(int length, Dynamic (*initFunc)(int));
 
 /**
  * @brief Destroys the array, freeing the memory it held.

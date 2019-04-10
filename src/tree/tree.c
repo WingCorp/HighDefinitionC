@@ -10,6 +10,10 @@
  */
 #include "tree.h"
 
+#include "./../iterator/iterator.h"
+#include "./../list/list.h"
+#include "./../fold/fold.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -394,6 +398,27 @@ Tree* tree_init()
 {
     Tree* tree = malloc(sizeof(Tree));
     return tree;
+}
+
+List* tree_traverseInOrder(Node* node)
+{
+    List* res = list_empty();
+    if (node->left != NULL && node->left->size > 0) {
+        res = list_concatenate(res, tree_traverseInOrder(node->left));
+    }
+    res = list_cons(res, node->value);
+    if (node->right != NULL && node->right-> size > 0) {
+        res = list_concatenate(res, tree_traverseInOrder(node->right));
+    }
+    return res;
+}
+
+Iterator* tree_iterator(Tree* tree)
+{
+    List* list = tree_traverseInOrder(tree->root);
+    Iterator* it = list_iterator(list);
+    list_destroy(list);
+    return it;
 }
 
 void tree_destroy(Tree* tree)
