@@ -94,7 +94,7 @@ int compare(Comparable a, Comparable b)
             break;
     }
     int f = 0;
-    return 0/f;
+    return 0 / f; //So, we have to return an integer, but we should not.
     //We should never reach these statements, but if we do, I've made a terrible mistake somewhere.
 }
 

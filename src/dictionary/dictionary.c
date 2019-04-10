@@ -125,7 +125,7 @@ void dict_remove_destroy(Dict* dict, unsigned long key, void (*destroyer)(Dynami
 }
 
 void default_destroyer(Dynamic d) {
-    //Don't do anything at all.
+    some(d); //No-op, essentially.
 }
 
 void dict_remove(Dict* dict, unsigned long key)

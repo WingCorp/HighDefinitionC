@@ -106,6 +106,22 @@ void dict_remove_destroy(Dict* dict, unsigned long key, void (*destroyer)(Dynami
 bool dict_contains(Dict* dict, unsigned long key);
 
 /**
+ * @brief Returns the size of the dictionary
+ * 
+ * @param dict A pointer to a dictionary.
+ */
+int dict_size(Dict* dict);
+
+/**
+ * @brief Determines whether the given dictionary is empty.
+ * 
+ * @param dict A pointer to a dictionary.
+ * @return true The dictionary is empty.
+ * @return false The dictionary is not empty.
+ */
+bool dict_isEmpty(Dict* dict);
+
+/**
  * @brief Get a value from the dictionary by the given key string.
  * 
  * @param dict The dictionary.
