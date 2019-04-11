@@ -7,8 +7,6 @@
  * @date 2018-06-14
  */
 
-double math_epsilon = 0.0000001;
-
 long math_longAbs(long l) 
 {
     return (l < 0L) ? l * -1L : l;
