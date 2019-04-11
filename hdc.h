@@ -1,3 +1,5 @@
+#pragma region HDC
+
 #ifndef HDC
 #define HDC
 
@@ -12,7 +14,6 @@
  * 
  */
 
-#include <inttypes.h>
 
 #define long long long
 
@@ -34,3 +35,5 @@
 #include "src/set/set.h"
 
 #endif
+
+#pragma endregion HDC

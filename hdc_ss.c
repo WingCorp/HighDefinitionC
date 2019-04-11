@@ -1,16 +1,16 @@
-#include <inttypes.h>
+#include <stdbool.h>
 
 #include <string.h>
 
-#include <execinfo.h>
+#include <stdio.h>
 
 #include <stdarg.h>
 
 #include <stdlib.h>
 
-#include <stdio.h>
+#include <execinfo.h>
 
-#include <stdbool.h>
+#pragma region HDC
 
 #ifndef HDC
 #define HDC
@@ -2717,6 +2717,9 @@ void set_destroy(Set* set)
 
 
 #endif
+
+#pragma endregion HDC
+
 #include "hdc.h"
 
 int main()

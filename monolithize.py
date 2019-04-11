@@ -47,7 +47,7 @@ def monolithize(hdc_header_path, output_path):
     
     with open(hdc_header_path.replace('.h', '.c')) as source:
         single_source += '\n' + ''.join(source.readlines())
-
+    
     with open(output_path, 'w') as output:
         output.write(single_source)
 
