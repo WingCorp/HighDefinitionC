@@ -13,6 +13,8 @@
 #include "./../iterator/iterator.h"
 #include "./../option/option.h"
 
+#include <stdarg.h>
+
 typedef struct _List List;
 
 /**
@@ -22,6 +24,15 @@ typedef struct _List List;
  */
 List* list_empty();
 
+/**
+ * @brief Creates a new list from the given items.
+ * 
+ * @param count The total number of items.
+ * @param item A dynamic item.
+ * @param ... A variable amount of dynamics.
+ * @return List* 
+ */
+List* list_from(int count, Dynamic item, ...);
 
 /**
  * @brief Cons a new value to the end of the list and return the list.

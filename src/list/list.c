@@ -210,3 +210,21 @@ Iterator* list_iterator(List* list)
     }
     return iterator_init_eager(dynArr, length);
 }
+
+List* list_from(int count, Dynamic item, ...)
+{
+    va_list args;
+    va_start(args, item);
+    
+    List* list = list_empty();
+    list_cons(list, item);
+
+    int i;
+    for (i = 1; i < count; i++)
+    {
+        Dynamic param = va_arg(args, Dynamic);
+        list = list_cons(list, param);
+    }
+    return list;
+}
+

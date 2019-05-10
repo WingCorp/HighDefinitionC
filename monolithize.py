@@ -39,6 +39,8 @@ def monolithize(hdc_header_path, output_path):
             if line.startswith("#include"):
                 std_libs.append(line)
                 continue
+            if line.startswith("#"):
+                continue
             single_source += line
     
     std_libs = reversed(list(set(std_libs)))
@@ -46,7 +48,10 @@ def monolithize(hdc_header_path, output_path):
         single_source = lib + '\n' + single_source
     
     with open(hdc_header_path.replace('.h', '.c')) as source:
-        single_source += '\n' + ''.join(source.readlines())
+        for line in source:
+            if line.startswith("#include"):
+                continue
+            single_source += line
 
     with open(output_path, 'w') as output:
         output.write(single_source)
