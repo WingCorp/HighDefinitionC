@@ -51,7 +51,7 @@ def monolithize(hdc_header_path, output_path):
         for line in source:
             if line.startswith("#include"):
                 continue
-            single_source += line
+            single_source +=  line + '\n'
 
     with open(output_path, 'w') as output:
         output.write(single_source)

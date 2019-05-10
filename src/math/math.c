@@ -7,34 +7,24 @@
  * @date 2018-06-14
  */
 
-double math_epsilon = 0.0000001;
-
 long math_longAbs(long l) 
 {
-    if(l < 0) 
-    {
-        return l * -1;
-    }
-    else return l;
+    return (l < 0L) ? l * -1L : l;
 }
 
 int math_intAbs(int i) 
 {
-    return (int) math_longAbs((long) i);
+    return (i < 0) ? i * -1 : i;
 }
 
 double math_doubleAbs(double d)
 {
-    if(d + math_epsilon < 0)
-    {
-        return d * -1;
-    }
-    else return d;
+    return (d < 0.) ? d * -1. : d;
 }
 
 float math_floatAbs(float f)
 {
-    return (float) math_doubleAbs((double) f);
+    return (f < 0.f) ? f * -1.f : f;
 }
 
 int ilog10(int i)
