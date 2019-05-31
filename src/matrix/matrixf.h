@@ -3,7 +3,7 @@
 
 /**
  * @file matrix.h
- * @author your name (jvoi@itu.dk)
+ * @author Jon Voigt Tøttrup (jvoi@itu.dk)
  * @brief A matrix module for handling matrices.
  * @version 0.1
  * @date 2019-04-11
@@ -25,6 +25,16 @@ Matrixf* matrixf_swapRow(Matrixf* matrix, int r_1, int r_2);
 Matrixf* matrixf_scaleRow(Matrixf* matrix, int r, float scalar);
 
 Matrixf* matrixf_addRow(Matrixf* matrix, float scalar,  int r_1, int r_2);
+
+Matrixf* matrixf_rowEchelon(Matrixf* matrix);
+
+Matrixf* matrixf_reducedRowEchelon(Matrixf* matrix);
+
+bool matrixf_isConsistent(Matrixf* matrix);
+
+Option/*<dref<Matrixf> option>*/ matrixf_parametricSolution(Matrixf* matrix);
+
+double matrixf_calculateDeterminant(Matrixf* matrix);
 
 /**
  * @brief 
