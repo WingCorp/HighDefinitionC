@@ -12,13 +12,21 @@
  * 
  */
 
-#include "./../array/array.h"
+#include <stdbool.h>
+#include <stdarg.h>
+
+#include "./../option/option.h"
+#include "./../vectorf/vectorf.h"
 
 typedef struct _Matrixf Matrixf;
 
 Matrixf* matrixf_id(int size);
 
-Matrixf* matrixf_initFun(int size, float* (initFun(int, int)));
+Matrixf* matrixf_initFun(int size, float (*initFun(int, int)));
+
+Matrixf* matrixf_fromRows(int rows, Vectorf* row, ...);
+
+Matrixf* matrixf_fromColumns(int columns, Vectorf* column, ...);
 
 Matrixf* matrixf_swapRow(Matrixf* matrix, int r_1, int r_2);
 

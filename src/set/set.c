@@ -1,6 +1,8 @@
 #include "set.h"
 #include "./../tree/tree.h"
 
+#include <stdlib.h>
+
 typedef struct _Set 
 {
     Tree* tree;
@@ -46,9 +48,25 @@ Set* set_init(Iterator* iterator)
     return set;
 }
 
+Set* set_from(int size, Comparable comp, ...)
+{
+    va_list args;
+    va_start(args, comp);
+    Set* set = set_empty();
+    set_add(set, comp);
+    int i;
+    for (i = 1; i < size; i++)
+    {
+        Comparable arg = va_arg(args, Comparable);
+        set_add(set, arg);
+    }
+    va_end(args);
+    return set;
+}
+
 Iterator* set_iterator(Set* set)
 {
-    tree_iterator(set->tree);
+    return tree_iterator(set->tree);
 }
 
 void set_destroy(Set* set)
