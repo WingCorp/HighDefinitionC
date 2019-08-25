@@ -1,9 +1,8 @@
 #include "lambda.h"
-#include "fail.h"
+#include "./../fail/fail.h"
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
 
@@ -18,7 +17,7 @@ typedef enum _TokenType
     T_ARROW,  //=>
     T_LPAR,   //(
     T_RPAR,   //)
-    T_NAME,    //\w+
+    T_NAME,   //\w+
     T_NUMBER,
     T_CHAR,   //'
     T_STRING, //"
@@ -599,7 +598,7 @@ typedef struct _Lambda
     Dict* environment;
 } Lambda;
 
-Dynamic apply(Lambda* lambda, Dynamic param, ...)
+Dynamic go(Lambda* lambda, Dynamic param, ...)
 {
     va_list args;
     va_start(args, param);

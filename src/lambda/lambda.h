@@ -2,10 +2,10 @@
 #define LAMBDA_H
 
 /**
- * @file closure.h
+ * @file lambda.h
  * @author Jon Voigt Tøttrup (jvoi@itu.dk)
  *
- * @brief A module for allowing creation and usage of closures.
+ * @brief A module for allowing creation and usage of lambda functions.
  * 
  * The piece d' resistance of this entire library.
  * @version 0.1
@@ -16,6 +16,7 @@
  */
 
 #include "./../dictionary/dictionary.h"
+#include <stdarg.h>
 
 typedef struct _Lambda Lambda;
 
@@ -28,6 +29,6 @@ typedef struct _Lambda Lambda;
  */
 Lambda* lambda(char* body, Dict* environment);
 
-Dynamic go(Lambda* lambda);
+Dynamic go(Lambda* lambda, Dynamic param, ...);
 
 #endif

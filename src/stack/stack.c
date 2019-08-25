@@ -65,7 +65,8 @@ void decreaseCapacity(Stack* stack)
 
 Option stack_pop(Stack* stack)
 {
-    if (stack->size == 0) {
+    if (stack->size == 0)
+    {
         return none();
     }
     int top = stack->size - 1;
@@ -75,6 +76,17 @@ Option stack_pop(Stack* stack)
     {
         decreaseCapacity(stack);
     }    
+    return some(toReturn);
+}
+
+Option stack_peek(Stack* stack)
+{
+    if (stack->size == 0)
+    {
+        return none();
+    }
+    int top = stack->size - 1;
+    Dynamic toReturn = stack->dynamics[top];
     return some(toReturn);
 }
 

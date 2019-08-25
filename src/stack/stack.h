@@ -47,6 +47,14 @@ void stack_push(Stack* stack, Dynamic dyn);
 Option stack_pop(Stack* stack);
 
 /**
+ * @brief Peeks at the top value of a Stack.
+ * 
+ * @param stack The stack to peek at.
+ * @return Option The value at the top of the stack, if any.
+ */
+Option stack_peek(Stack* stack);
+
+/**
  * @brief Determines number of values currently stored in the stack.
  * 
  * @param stack the stack to check.
@@ -71,6 +79,7 @@ void stack_trim(Stack* stack);
 /**
  * @brief Gets an iterator from the current stack.
  * 
+ * @param stack The stack.
  * @return Iterator an iterator.
  */
 Iterator* stack_iterator(Stack* stack);
