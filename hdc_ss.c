@@ -1,19 +1,18 @@
 #include <stdbool.h>
 
-#include <string.h>
+#include <math.h>
 
-#include <stdio.h>
+#include <string.h>
 
 #include <stdarg.h>
 
-#include <stdlib.h>
-
 #include <execinfo.h>
 
-#pragma region HDC
+#include <stdlib.h>
 
-#ifndef HDC
-#define HDC
+#include <stdio.h>
+
+
 
 /**
  * @file hdc.h
@@ -27,7 +26,6 @@
  */
 
 
-#define long long long
 
 #ifndef FAIL_H
 #define FAIL_H
@@ -89,68 +87,6 @@ void failwith(char* cause)
     exit(EXIT_FAILURE);
 }
 
-#ifndef MATH
-#define MATH
-/***
- * The math module.
- * 
- **/
-
-long math_longAbs(long l);
-int math_intAbs(int i);
-
-double math_doubleAbs(double d);
-float math_floatAbs(float f);
-
-int ilog10(int i);
-
-#endif
-/**
- * Math
- * @brief An attempt at a simple math module in C.
- * 
- * @file math.c
- * @author Jon Voigt Tøttrup
- * @date 2018-06-14
- */
-
-double math_epsilon = 0.0000001;
-
-long math_longAbs(long l) 
-{
-    if(l < 0) 
-    {
-        return l * -1;
-    }
-    else return l;
-}
-
-int math_intAbs(int i) 
-{
-    return (int) math_longAbs((long) i);
-}
-
-double math_doubleAbs(double d)
-{
-    if(d + math_epsilon < 0)
-    {
-        return d * -1;
-    }
-    else return d;
-}
-
-float math_floatAbs(float f)
-{
-    return (float) math_doubleAbs((double) f);
-}
-
-int ilog10(int i)
-{
-    return 
-        (i > 999999999) ? 9 : (i >= 99999999) ? 8 :
-        (i > 9999999) ? 7 : (i > 999999) ? 6 : (i > 99999) ? 5 : 
-        (i > 9999) ? 4 : (i > 999) ? 3 : (i > 99) ? 2 : (i > 9) ? 1 : 0;
-}
 
 #ifndef DYNAMIC_H
 #define DYNAMIC_H
@@ -1410,6 +1346,7 @@ Dynamic stack_fold(Stack* stack, Dynamic state, Dynamic (*folder) (Dynamic, Dyna
  */
 
 
+
 typedef struct _List List;
 
 /**
@@ -1419,6 +1356,15 @@ typedef struct _List List;
  */
 List* list_empty();
 
+/**
+ * @brief Creates a new list from the given items.
+ * 
+ * @param count The total number of items.
+ * @param item A dynamic item.
+ * @param ... A variable amount of dynamics.
+ * @return List* 
+ */
+List* list_from(int count, Dynamic item, ...);
 
 /**
  * @brief Cons a new value to the end of the list and return the list.
@@ -1710,6 +1656,24 @@ Iterator* list_iterator(List* list)
     }
     return iterator_init_eager(dynArr, length);
 }
+
+List* list_from(int count, Dynamic item, ...)
+{
+    va_list args;
+    va_start(args, item);
+    
+    List* list = list_empty();
+    list_cons(list, item);
+
+    int i;
+    for (i = 1; i < count; i++)
+    {
+        Dynamic param = va_arg(args, Dynamic);
+        list = list_cons(list, param);
+    }
+    return list;
+}
+
 
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
@@ -2595,6 +2559,7 @@ void tree_destroy(Tree* tree)
  */
 
 
+
 /**
  * @brief The Set struct.
  *        A set of Comparables.
@@ -2607,6 +2572,16 @@ typedef struct _Set Set;
  * @return Set* A new empty set.
  */
 Set* set_empty();
+
+/**
+ * @brief Create a new set from a variable number of arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from(int size, Comparable value, ...);
 
 /**
  * @brief Initialize a Set with a fixed size and initFunction.
@@ -2704,9 +2679,25 @@ Set* set_init(Iterator* iterator)
     return set;
 }
 
+Set* set_from(int size, Comparable comp, ...)
+{
+    va_list args;
+    va_start(args, comp);
+    Set* set = set_empty();
+    set_add(set, comp);
+    int i;
+    for (i = 1; i < size; i++)
+    {
+        Comparable arg = va_arg(args, Comparable);
+        set_add(set, arg);
+    }
+    va_end(args);
+    return set;
+}
+
 Iterator* set_iterator(Set* set)
 {
-    tree_iterator(set->tree);
+    return tree_iterator(set->tree);
 }
 
 void set_destroy(Set* set)
@@ -2715,12 +2706,421 @@ void set_destroy(Set* set)
     free(set);
 }
 
+#ifndef VECTORF_H
+#define VECTORF_H
+
+/**
+ * @file vectorf.h
+ * @author Jon Voigt Tøttrup (jon@zendata.dk)
+ * @brief A module for handling vector-calculus
+ * @version 0.1
+ * @date 2019-05-27
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
+
+typedef struct _Vectorf {
+    int size;
+    float* values;
+} Vectorf;
+
+/**
+ * @brief Create a zero-vector of a given size.
+ * 
+ * @param size The size of the vector.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_zero(int size);
+
+/**
+ * @brief Initialize a vector by a function.
+ * 
+ * @param size The total size of the vector.
+ * @param initFun The initialization function.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_initFun(int size, float (*initFun(int)));
+
+/**
+ * @brief Initialize a vector by varargs.
+ * 
+ * @param size The size of the vector.
+ * @param f The first value of the vector.
+ * @param ... The remaining values of the vector.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_from(int size, float f, ...);
+
+/**
+ * @brief Initialize a vector by an iterator.
+ * 
+ * @param Iterator<f32> iterator The iterator containing the values packed as df32s.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_init(Iterator* iterator);
+
+/**
+ * @brief Release a vector from memory.
+ * 
+ * @param vector A pointer to a vector.
+ */
+void vectorf_destroy(Vectorf* vector);
+
+/**
+ * @brief Add two vectors together.
+ * 
+ * @param v The first vector to add.
+ * @param u The second vector to add.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_add(Vectorf* v, Vectorf* u);
+
+/**
+ * @brief Scale a vector.
+ * 
+ * @param scalar The scalar to scale by.
+ * @param vector The vector to scale.
+ * @return Vectorf* The resulting vector.
+ */
+Vectorf* vectorf_scale(float scalar, Vectorf* vector);
+
+/**
+ * @brief Scale two vectors before adding them together.
+ * 
+ * @param s The scalar to apply to the first vector.
+ * @param v The first vector.
+ * @param t The scalar to apply to the second vector.
+ * @param u The second vector.
+ * @return Vectorf* The produced vector.
+ */
+Vectorf* vectorf_sadd(float s, Vectorf* v, float t, Vectorf* u);
+
+/**
+ * @brief Returns the magnitude of a vector.
+ * 
+ * @param v The vector.
+ * @return float The magnitude.
+ */
+float vectorf_mag(Vectorf* v);
+
+/**
+ * @brief Returns the dot product of two vectors.
+ * 
+ * @param v The first vector.
+ * @param u The second vector.
+ * @return float The dot product.
+ */
+float vectorf_dot(Vectorf* v, Vectorf* u);
+
+/**
+ * @brief Return the angle between two vectors.
+ * 
+ * @param v The first vector.
+ * @param u The second vector.
+ * @return float The angle between the vectors.
+ */
+float vectorf_angle(Vectorf* v, Vectorf* u);
+
+/**
+ * @brief Returns the cross product of two vectors.
+ * 
+ * @param v The first vector.
+ * @param u The second vector.
+ * @return Vectorf* The cross product.
+ */
+Vectorf* vectorf_cross(Vectorf* v, Vectorf* u);
+
+/**
+ * @brief Create an iterator from a vector.
+ * 
+ * @param v The vector.
+ * @return Iterator* The resulting iterator.
+ */
+Iterator* vectorf_iterator(Vectorf* v);
+
+/**
+ * @brief Retrieve a value from the vector.
+ * 
+ * @param index Index of value to retrieve.
+ * @return float The retrieved value.
+ */
+float vectorf_get(Vectorf* v, int index);
+
+/**
+ * @brief Set a value in a vector.
+ * 
+ * @param v The vector.
+ * @param index The index of the value;
+ * @param value The value;
+ */
+void vectorf_set(Vectorf* v, int index, float value);
 
 #endif
 
-#pragma endregion HDC
 
-#include "hdc.h"
+
+Vectorf* vectorf_zero(int size)
+{
+    Vectorf* v = malloc(sizeof(Vectorf));
+    v->size = size;
+    v->values = malloc(sizeof(float)*size);
+    int i;
+    for (i = 0; i < size; i++)
+    {
+        v->values[i] = 0.0f;
+    }
+    return v;
+}
+
+Vectorf* vectorf_initFun(int size, float (*initFun(int)))
+{
+    Vectorf* v = malloc(sizeof(Vectorf));
+    v->size = size;
+    v->values = malloc(sizeof(float)*size);
+    int i;
+    for (i = 0; i < size; i++)
+    {
+        v->values[i] = *(initFun)(i);
+    }
+    return v;
+}
+
+Vectorf* vectorf_from(int size, float f, ...)
+{
+    va_list args;
+    va_start(args, f);
+
+    Vectorf* v = malloc(sizeof(Vectorf));
+    v->size = size;
+    v->values = malloc(sizeof(float)*size);
+    v->values[0] = f;
+    int i;
+    for (i = 1; i < size; i++)
+    {
+        v->values[i] = va_arg(args, float);
+    }
+    va_end(args);
+    return v;
+}
+
+Vectorf* vectorf_init(Iterator* iterator)
+{
+    Vectorf* v = malloc(sizeof(Vectorf));
+    v->size = iterator_remaining(iterator);
+    v->values = malloc(sizeof(float)*v->size);
+    int i = 0;
+    while (iterator_hasNext(iterator))
+    {
+        v->values[i] = f32(coerce(iterator_next(iterator)));
+        i++;
+    }
+    return v;
+}
+
+void vectorf_destroy(Vectorf* vector)
+{
+    free(vector->values);
+    free(vector);
+}
+
+float vectorf_get(Vectorf* v, int index)
+{
+    return v->values[index];
+}
+
+void vectorf_set(Vectorf* v, int index, float value)
+{
+    if (index < 0 || index >= v->size)
+    {
+        failwith("Illegal argument: index out of bounds");
+    }
+    v->values[index] = value;
+}
+
+void checkSizes(Vectorf* v, Vectorf* u)
+{
+    if (v->size != u->size)
+    {
+        failwith("Cannot perform operation on vectors of different sizes.");
+    }
+}
+
+Vectorf* vectorf_add(Vectorf* v, Vectorf* u)
+{
+    checkSizes(v, u);
+    Vectorf* res = vectorf_zero(v->size);
+    int i;
+    for (i = 0; i < v->size; i++)
+    {
+        res->values[i] = v->values[i] + u->values[i];
+    }
+    return res;
+}
+
+Vectorf* vectorf_scale(float scalar, Vectorf* v)
+{
+    Vectorf* res = vectorf_zero(v->size);
+    int i;
+    for (i = 0; i < v->size; i++)
+    {
+        res->values[i] = v->values[i] * scalar;
+    }
+    return res;
+}
+
+Vectorf* vectorf_sadd(float s, Vectorf* v, float t, Vectorf* u)
+{
+    checkSizes(v, u);
+    Vectorf* res = vectorf_zero(v->size);
+    int i;
+    for (i = 0; i < v->size; i++)
+    {
+        res->values[i] = (s * v->values[i]) + (t * u->values[i]);
+    }
+    return res;
+}
+
+float vectorf_mag(Vectorf* v)
+{
+    float squareSum = 0.0f;
+    int i;
+    for (i = 0; i < v->size; i++)
+    {
+        squareSum += v->values[i] * v->values[i];
+    }
+    return sqrtf(squareSum);
+}
+
+float vectorf_dot(Vectorf* v, Vectorf* u)
+{
+    checkSizes(v, u);
+    float dotProduct = 0.0f;
+    int i;
+    for (i = 0; i < v->size; i++)
+    {
+        dotProduct += v->values[i] * u->values[i];
+    }
+    return dotProduct;
+}
+
+float vectorf_angle(Vectorf* v, Vectorf* u)
+{
+    float dot = vectorf_dot(v, u);
+    float magProd = vectorf_mag(v) * vectorf_mag(u);
+    return acosf(dot / magProd);
+}
+
+#ifndef MATRIXF_H
+#define MATRIXF_H
+
+/**
+ * @file matrix.h
+ * @author Jon Voigt Tøttrup (jvoi@itu.dk)
+ * @brief A matrix module for handling matrices.
+ * @version 0.1
+ * @date 2019-04-11
+ * 
+ * @copyright WingCorp (c) 2019
+ * 
+ */
+
+
+
+typedef struct _Matrixf Matrixf;
+
+Matrixf* matrixf_id(int size);
+
+Matrixf* matrixf_initFun(int size, float (*initFun(int, int)));
+
+Matrixf* matrixf_fromRows(int rows, Vectorf* row, ...);
+
+Matrixf* matrixf_fromColumns(int columns, Vectorf* column, ...);
+
+Matrixf* matrixf_swapRow(Matrixf* matrix, int r_1, int r_2);
+
+Matrixf* matrixf_scaleRow(Matrixf* matrix, int r, float scalar);
+
+Matrixf* matrixf_addRow(Matrixf* matrix, float scalar,  int r_1, int r_2);
+
+Matrixf* matrixf_rowEchelon(Matrixf* matrix);
+
+Matrixf* matrixf_reducedRowEchelon(Matrixf* matrix);
+
+bool matrixf_isConsistent(Matrixf* matrix);
+
+Option/*<dref<Matrixf> option>*/ matrixf_parametricSolution(Matrixf* matrix);
+
+double matrixf_calculateDeterminant(Matrixf* matrix);
+
+/**
+ * @brief 
+ * 
+ * @param matrix The matrix to find the eigenvalues for.
+ * @return Dynamic<di32, dref> containing the number of eigenvalues and the eigenvalues.
+ */
+Dynamic/*<di32, dref>*/ matrixf_eigenvalues(Matrixf* matrix);
+
+Dynamic/*<di32, dref>*/ matrixf_eigenvectors(Matrixf* matrix, int lambda_count, float* eigenvalues);
+
+float* matrixf_diagonalize();
+
+#endif
+
+typedef struct _Matrixf {
+    int n; //row length
+    int m; //column length
+    Vectorf** rows;
+} Matrixf;
+
+Matrixf* matrixf_id(int size)
+{
+    Matrixf* matrix = malloc(sizeof(Matrixf));
+    Vectorf** rows = malloc(sizeof(Vectorf*)*size);
+    int i;
+    for (i = 0; i < size; i++)
+    {
+        rows[i] = vectorf_zero(size);
+        vectorf_set(rows[i], i, 1.0f);
+    }
+    matrix->n = size;
+    matrix->m = size;
+    matrix->rows = rows;
+    return matrix;
+}
+
+Matrixf* matrixf_initFun(int size, float* (initFun(int, int)));
+
+Matrixf* matrixf_swapRow(Matrixf* matrix, int r_1, int r_2);
+
+Matrixf* matrixf_scaleRow(Matrixf* matrix, int r, float scalar);
+
+Matrixf* matrixf_addRow(Matrixf* matrix, float scalar,  int r_1, int r_2);
+
+Matrixf* matrixf_rowEchelon(Matrixf* matrix);
+
+Matrixf* matrixf_reducedRowEchelon(Matrixf* matrix);
+
+bool matrixf_isConsistent(Matrixf* matrix);
+
+Option/*<dref<Matrixf> option>*/ matrixf_parametricSolution(Matrixf* matrix);
+
+double matrixf_calculateDeterminant(Matrixf* matrix);
+
+/**
+ * @brief 
+ * 
+ * @param matrix The matrix to find the eigenvalues for.
+ * @return Dynamic<di32, dref> containing the number of eigenvalues and the eigenvalues.
+ */
+Dynamic/*<di32, dref>*/ matrixf_eigenvalues(Matrixf* matrix);
+
+Dynamic/*<di32, dref>*/ matrixf_eigenvectors(Matrixf* matrix, int lambda_count, float* eigenvalues);
+
+float* matrixf_diagonalize();
+
+
 
 int main()
 {

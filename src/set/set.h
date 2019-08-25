@@ -15,6 +15,8 @@
 #include "./../comparable/comparable.h"
 #include "./../iterator/iterator.h"
 
+#include <stdarg.h>
+
 /**
  * @brief The Set struct.
  *        A set of Comparables.
@@ -27,6 +29,16 @@ typedef struct _Set Set;
  * @return Set* A new empty set.
  */
 Set* set_empty();
+
+/**
+ * @brief Create a new set from a variable number of arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from(int size, Comparable value, ...);
 
 /**
  * @brief Initialize a Set with a fixed size and initFunction.

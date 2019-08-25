@@ -7,22 +7,22 @@
  * @date 2018-06-14
  */
 
-long math_longAbs(long l) 
+long absl(long l) 
 {
     return (l < 0L) ? l * -1L : l;
 }
 
-int math_intAbs(int i) 
+int abs(int i) 
 {
     return (i < 0) ? i * -1 : i;
 }
 
-double math_doubleAbs(double d)
+double absd(double d)
 {
     return (d < 0.) ? d * -1. : d;
 }
 
-float math_floatAbs(float f)
+float absf(float f)
 {
     return (f < 0.f) ? f * -1.f : f;
 }
@@ -34,3 +34,18 @@ int ilog10(int i)
         (i > 9999999) ? 7 : (i > 999999) ? 6 : (i > 99999) ? 5 : 
         (i > 9999) ? 4 : (i > 999) ? 3 : (i > 99) ? 2 : (i > 9) ? 1 : 0;
 }
+
+float sqrtf(float num)
+{
+    float guess, e, upperbound;
+    guess = 1;
+    e = 0.001f;
+    do 
+    {
+        upperbound = num / guess;
+        guess = (upperbound + guess) / 2;
+    } while (!(guess * guess >= num - e && 
+               guess * guess <= num + e));
+    return guess;
+}
+
