@@ -69,7 +69,20 @@ List* list_copy(List* list)
 
 List* list_concatenate(List* listA, List* listB)
 {
+    if (listA->length == 0 && listB->length > 0)
+    {
+        return list_copy(listB);
+    }
+    if (listB->length == 0 && listA->length > 0)
+    {
+        return list_copy(listA);
+    }
+    if (listA->length == 0 && listB->length == 0)
+    {
+        return list_empty();
+    }
     List* outList = list_empty();
+    
     Link* currentLink = listA->start;
     while(currentLink->next)
     {
@@ -227,4 +240,3 @@ List* list_from(int count, Dynamic item, ...)
     }
     return list;
 }
-

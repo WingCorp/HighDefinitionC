@@ -30,7 +30,7 @@ int str_join_test()
 
 int main()
 {
-    test_declareAndRun("Concatenate string works as expeced", str_concat_test);
-    test_declareAndRun("Join string works as expeced", str_join_test);
+    test_declareAndRun("Concatenate string works as expected", str_concat_test);
+    test_declareAndRun("Join string works as expected", str_join_test);
     return 0;
 }

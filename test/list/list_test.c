@@ -1,10 +1,12 @@
 #include "./../test.h"
 #include "./../assert.h"
+#include "./../../src/array/array.h"
 #include "./../../src/list/list.h"
 #include "./../../src/dynamic/dynamic.h"
 #include "./../../src/foreach/foreach.h"
 #include "./../../src/fold/fold.h"
 #include "./../../src/map/map.h"
+#include "./../../src/str/str.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,11 +72,30 @@ int list_iteratorWorks()
     return assertIntEquals(285, i32(sum));
 }
 
+int list_concatenateWorks()
+{
+    char* start = "HAPPY ";
+    List* s = list_initFromIterator(str_iterator(start));
+
+    char* end = "BIRTHDAY";
+    List* e = list_initFromIterator(str_iterator(end));
+    
+    List* combined = list_concatenate(s, e);
+
+    Iterator* l = list_iterator(combined);
+    
+    char* expected = "HAPPY BIRTHDAY";
+    
+    char* actual = str(fold(l, dstr(""), *str_concat_c_d));
+    return assertStringEquals(expected, actual);
+}
+
 int main()
 {
     test_declareAndRun("list_empty() actually returns empty list", list_emptyListReturnsEmpty);
     test_declareAndRun("list_cons extends list by one element", list_consExtendsListByOneElement);
     test_declareAndRun("list_cons twice extends list by two elements", list_consTwiceIsListOfLengthTwo);
     test_declareAndRun("list_iterator works as intended, tested with foreach, map and fold", list_iteratorWorks);
+    test_declareAndRun("list_concatenate actually works properly!", list_concatenateWorks);
     return 0;
 }

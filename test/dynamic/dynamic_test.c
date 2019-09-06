@@ -46,11 +46,27 @@ int dynamic_pairsCanStoreDynamics()
     return assertIntEquals(i, fstVal) && assertIntEquals(j, sndVal);
 }
 
+int dynamic_strsWorkAsExpected()
+{
+    Dynamic dstring = dstr("DYNAMIC");
+    return assertStringEquals("DYNAMIC", str(dstring));
+}
+
+int dynamic_strsCanBeStoredInPairs()
+{
+    Dynamic left = dstr("LEFT");
+    Dynamic right = dstr("RIGHT");
+    Dynamic p = pair(left, right);
+    return assertStringEquals("LEFT", str(fst(p))) && assertStringEquals("RIGHT", str(snd(p)));
+}
+
 int main()
 {
     test_declareAndRun("Dynamic int32 is equivalent to regular int", dynamic_int32CreatesDynamic);
     test_declareAndRun("Dynamic ref can store Struct properly", dynamic_refCanStoreStruct);
     test_declareAndRun("Dynamic ref can store String properly", dynamic_refCanStoreString);
     test_declareAndRun("Dynamic pair functions work properly", dynamic_pairsCanStoreDynamics);
+    test_declareAndRun("Dynamic strings can be initialized properly", dynamic_strsWorkAsExpected);
+    test_declareAndRun("Dynamic strings can be stored in pairs", dynamic_strsCanBeStoredInPairs);
     return 0;
 }

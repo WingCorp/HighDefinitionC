@@ -41,6 +41,56 @@ Set* set_empty();
 Set* set_from(int size, Comparable value, ...);
 
 /**
+ * @brief Create a new set from a variable number of dynamically typed arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from_ds(int size, Dynamic value, ...);
+
+/**
+ * @brief Create a new set from a variable number of 32-bit integer arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from_i32s(int size, int value, ...);
+
+/**
+ * @brief Create a new set from a variable number of 64-bit integer arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from_i64s(int size, long value, ...);
+
+/**
+ * @brief Create a new set from a variable number of char arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from_chrs(int size, char value, ...);
+
+/**
+ * @brief Create a new set from a variable number of char-pointer arguments.
+ * 
+ * @param size The number of arguments in total.
+ * @param value The first argument.
+ * @param ... The remaining arguments.
+ * @return Set* A new set.
+ */
+Set* set_from_strs(int size, char* value, ...);
+
+/**
  * @brief Initialize a Set with a fixed size and initFunction.
  * 
  * @param size The size of the new set.
@@ -64,6 +114,46 @@ Set* set_init(Iterator* iterator);
  * @param item The item to add.
  */
 void set_add(Set* set, Comparable item);
+
+/**
+ * @brief Add a dynamically typed value to a set.
+ * 
+ * @param set The set.
+ * @param item The item to add.
+ */
+void set_add_d(Set* set, Dynamic item);
+
+/**
+ * @brief Add a 32-bit integer value to a set.
+ * 
+ * @param set The set.
+ * @param item The item to add.
+ */
+void set_add_i32(Set* set, int item);
+
+/**
+ * @brief Add a 64-bit integer value to a set.
+ * 
+ * @param set The set.
+ * @param item The item to add.
+ */
+void set_add_i64(Set* set, long item);
+
+/**
+ * @brief Add a char value to a set.
+ * 
+ * @param set The set.
+ * @param item The item to add.
+ */
+void set_add_chr(Set* set, char item);
+
+/**
+ * @brief Add a char-pointer to a set.
+ * 
+ * @param set The set.
+ * @param item The item to add.
+ */
+void set_add_str(Set* set, char* item);
 
 /**
  * @brief Determine if a set contains an item.

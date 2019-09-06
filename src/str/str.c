@@ -1,6 +1,7 @@
 #include "str.h"
 #include "./../fold/fold.h"
 #include "./../iterator/iterator.h"
+#include "./../array/array.h"
 #include "./../math/math.h"
 #include "./../fail/fail.h"
 
@@ -8,6 +9,43 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
+
+Dynamic str_concat_c_d(Dynamic s, Dynamic c)
+{
+    return dstr(str_concat_c(str(s), chr(c)));
+}
+
+char* str_concat_c(char* s, char c)
+{
+    if (c == '\0')
+    {
+        int len_s = strlen(s);
+        char* copy = malloc(sizeof(char) + sizeof(char) * len_s);
+        int i;
+        for (i = 0; i < len_s; i++)
+        {
+            copy[i] = s[i];
+        }
+        copy[len_s] = '\0';
+        return copy;
+    }
+    int len_s = strlen(s);
+    char* combined = malloc(sizeof(char) + sizeof(char) * (len_s + 1));
+    int i;
+    for (i = 0; i < len_s; i++)
+    {
+        combined[i] = s[i];
+    }
+    combined[len_s] = c;
+    combined[len_s + 1] = '\0';
+    return combined;
+}
+
+Dynamic str_concat_d(Dynamic a, Dynamic b)
+{
+    return dstr(str_concat(str(a), str(b)));
+}
 
 char* str_concat(char* a, char* b)
 {
@@ -48,9 +86,8 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
         intermediate_results[i++] = infix_element;
         acc = str_concat(acc, infix_element);
     }
-    printf("%d\n", iterator_remaining(iterator));
     char* final = acc;
-    printf("%d\n", i);
+    free(intermediate_results[0]);
     int j;
     for (j = 1; j < i; j++)
     {
@@ -95,4 +132,21 @@ char* to_str(Dynamic d)
             break;
     }
     return out;
+}
+
+bool str_equals(char* strA, char* strB)
+{
+    return strcmp(strA, strB) == 0;
+}
+
+Iterator* str_iterator(char* string)
+{
+    int len = strlen(string);
+    Array* arr = array_empty(len);
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        array_setItem(arr, i, dchr(string[i]));
+    }
+    return array_iterator(arr);
 }
