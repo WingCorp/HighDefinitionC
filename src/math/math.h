@@ -11,5 +11,6 @@ double absd(double d);
 float absf(float f);
 
 int ilog10(int i);
+long llog10(long i);
 
 #endif

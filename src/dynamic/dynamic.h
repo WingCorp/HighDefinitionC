@@ -23,6 +23,7 @@ typedef enum _DynType
     FLOAT,
     DOUBLE,
     REFERENCE,
+    STRING,
     PAIR
 } DynType;
 
@@ -42,6 +43,7 @@ typedef union _DynValue
     unsigned long ui64;
     float f32;
     double f64;
+    char* str;
     void* ref;
     Pair pair;
 } DynValue;
@@ -102,6 +104,7 @@ Dynamic di64(long i64);
 Dynamic dui64(unsigned long ui64);
 Dynamic df32(float val);
 Dynamic df64(double val);
+Dynamic dstr(char* str);
 Dynamic dref(void* ref);
 
 
@@ -116,6 +119,7 @@ long i64(Dynamic dyn);
 unsigned long ui64(Dynamic dyn);
 float f32(Dynamic dyn);
 double f64(Dynamic dyn);
+char* str(Dynamic dyn);
 void* ref(Dynamic dyn);
 
 /**

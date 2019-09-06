@@ -35,6 +35,7 @@ int ilog10(int i)
         (i > 9999) ? 4 : (i > 999) ? 3 : (i > 99) ? 2 : (i > 9) ? 1 : 0;
 }
 
+
 float sqrtf(float num)
 {
     float guess, e, upperbound;

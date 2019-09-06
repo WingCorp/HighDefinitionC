@@ -2,6 +2,7 @@
 #include "./../fail/fail.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 Dynamic dbol(bool val)
 {
@@ -41,6 +42,19 @@ Dynamic df32(float val)
 Dynamic df64(double val)
 {
     return (Dynamic) { .type = DOUBLE, .value = (DynValue) { .f64 = val } };
+}
+
+Dynamic dstr(char* str)
+{
+    int len = strlen(str);
+    char* heap_str = malloc(sizeof(char*) + sizeof(char*) * len);
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        heap_str[i] = str[i];
+    }
+    heap_str[len + 1] = '\0';
+    return (Dynamic) { .type = STRING, .value = (DynValue) { .str = heap_str } };
 }
 
 Dynamic dref(void* ref)
@@ -178,6 +192,15 @@ double f64(Dynamic dyn)
     return dyn.value.f64;
 }
 
+char* str(Dynamic dyn)
+{
+    if (dyn.type != STRING)
+    {
+        failwith("Call to str() expected Dynamic of type STRING!");
+    }
+    return dyn.value.str;
+}
+
 void* ref(Dynamic dyn)
 {
     if (dyn.type != REFERENCE)
@@ -189,8 +212,8 @@ void* ref(Dynamic dyn)
 
 void delete(Dynamic dyn)
 {
-    if (dyn.type != REFERENCE || dyn.type != PAIR) {
-        failwith("Call to delete() expected Dynamic of type REFERENCE or PAIR!");
+    if (dyn.type != REFERENCE || dyn.type != PAIR || dyn.type == STRING) {
+        failwith("Call to delete() expected Dynamic of type REFERENCE, STRING or PAIR!");
     }
     if (dyn.type == REFERENCE) {
         free(dyn.value.ref);
@@ -198,5 +221,9 @@ void delete(Dynamic dyn)
     if (dyn.type == PAIR) {
         free(dyn.value.pair.left);
         free(dyn.value.pair.right);
+    }
+    if (dyn.type == STRING)
+    {
+        free(dyn.value.str);
     }
 }

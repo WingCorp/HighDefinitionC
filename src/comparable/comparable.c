@@ -13,6 +13,7 @@
 #include "./../dynamic/dynamic.h"
 #include "./../fail/fail.h"
 #include "comparable.h"
+#include <string.h>
 
 Comparable comparable(Dynamic dynamic)
 {
@@ -88,7 +89,8 @@ int compare(Comparable a, Comparable b)
             {
                 return (i64(aVal)) > (i64(bVal)) ? 1 : -1;
             }
-        
+        case STRING:
+            return strcmp(str(aVal), str(bVal));
         default:
             failwith("Cannot create comparable from unknown dynamic type!\n");
             break;

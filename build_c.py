@@ -71,7 +71,7 @@ def build(path_to_main, output_path):
     output = subprocess.run(subprocess_args, stdout=subprocess.PIPE).stdout.decode('utf-8')
     if len(output.strip()) > 1:
         print(output)
-    print("Exiting build process...")    
+    print("Success!\nExiting build process...")    
 
 def main(argv):
     if len(argv) != 3:
