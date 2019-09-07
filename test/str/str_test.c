@@ -7,6 +7,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int str_contains_test()
+{
+    char* lol = "lol";
+    char* o = "o";
+    bool actual = str_contains(lol, o);
+    return assertTrue("o is contained in lol", actual);
+}
+
+int str_not_contains_test()
+{
+    char* lol = "lol";
+    char* r = "r";
+    bool actual = str_contains(lol, r);
+    return assertTrue("r is not contained in lol", !actual);
+}
+
+int str_contains_long_test()
+{
+    char* text = "Jon@DESKTOP-U4NQMPA:/mnt/b/Source/C/HighDefinitionC$ ./out/test/str_test.o";
+    char* match = "DESKTOP-U4NQMPA";
+    return assertTrue("Long match found in long word", str_contains(text, match));
+}
+
+
 int str_concat_test()
 {
     char* lol = "lol";
@@ -28,9 +52,37 @@ int str_join_test()
     return assertStringEquals(expected, actual);
 }
 
+int str_sub_test()
+{
+    char* word = "word";
+    char* expected = "ord";
+    char* ord = str_sub(word, 1, 4);
+    return assertStringEquals(expected, ord);
+}
+
+int str_replace_test()
+{
+    char* goofy = "Goofy";
+    char* expected = "G00fy";
+    char* g00fy = str_replace(goofy, "oo", "00");
+    return assertStringEquals(expected, g00fy);
+}
+
+int str_copy_test()
+{
+    char* word = "WORD";
+    return assertStringEquals(word, str_copy(word));
+}
+
 int main()
 {
     test_declareAndRun("Concatenate string works as expected", str_concat_test);
     test_declareAndRun("Join string works as expected", str_join_test);
+    test_declareAndRun("o is contained in lol test", str_contains_test);
+    test_declareAndRun("r is not contained in lol test", str_not_contains_test);
+    test_declareAndRun("long contains test, let's stretch those loops!", str_contains_long_test);
+    test_declareAndRun("str_sub test", str_sub_test);
+    test_declareAndRun("str_replace test", str_replace_test);
+    test_declareAndRun("str_copy_test", str_copy_test);
     return 0;
 }

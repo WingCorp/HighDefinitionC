@@ -15,6 +15,13 @@
 #include <stdbool.h>
 #include "./../iterator/iterator.h"
 
+bool str_contains(char* in, char* match);
+
+char* str_sub(char* s, int start, int end);
+
+char* str_copy(char* s);
+
+char* str_replace(char* in, char* old, char* new);
 
 char* str_concat(char* a, char* b);
 

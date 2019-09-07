@@ -32,9 +32,8 @@ int assertCharEquals(char expected, char actual)
 
 int assertStringEquals(char* expected, char* actual)
 {
-    printf("Assertion that strings %s and %s were equal was ", expected, actual);
+    printf("Assertion that strings \"%s\" and \"%s\" were equal was ", expected, actual);
     int areEqual = strcmp(expected, actual) == 0;
-    
     if (areEqual)
     {
         printf("true!\n");

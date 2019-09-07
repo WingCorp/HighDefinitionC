@@ -27,9 +27,20 @@ typedef struct _SourceFile
     List* dependencies;
 } SourceFile;
 
+char* determine_filename(char* path)
+{
+    if ()
+    {
+        /* code */
+    }
+    
+}
+
 SourceFile* init_sourcefile(char* path)
 {
-    
+    SourceFile* s = malloc(sizeof(SourceFile));
+    s->path = path;
+    s->filename = 
 }
 
 List* get_build_order(SourceFile* sf)

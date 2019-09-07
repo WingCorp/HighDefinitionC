@@ -4,12 +4,124 @@
 #include "./../array/array.h"
 #include "./../math/math.h"
 #include "./../fail/fail.h"
+#include "./../stack/stack.h"
+#include "./../foreach/foreach.h"
+
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+
+char* str_sub(char* s, int start, int end)
+{
+    int slen = strlen(s);
+    if (start < 0 || start >= slen)
+    {
+        failwith("Illegal argument: Call to str_sub(), start out of bounds.");
+    }
+    if (end < 0 || end > slen)
+    {
+        failwith("Illegal argument: Call to str_sub(), end out of bounds");
+    }    
+    if (end < start)
+    {
+        failwith("Illegal argument: Call to str_sub() where start > end.");
+    }
+    char* out = malloc(sizeof(char) + sizeof(char) * (end - start));
+    int i;
+    int j = 0;
+    for (i = start; i < end; i++)
+    {
+        out[j++] = s[i];
+    }
+    out[end - 1] = '\0';
+    return out;
+}
+
+char* str_copy(char* s)
+{
+    int slen = strlen(s);
+    char* copy = malloc(sizeof(char) + sizeof(char) * slen);
+    int i;
+    for (i = 0; i < slen; i++)
+    {
+        copy[i] = s[i];
+    }
+    copy[slen] = '\0';
+    return copy;
+}
+
+bool str_contains(char* in, char* match)
+{
+    int mlen = strlen(match);
+    int inlen = strlen(in);
+    if (mlen > inlen)
+    {
+        return false;
+    }
+    int i;
+    for (i = 0; i < inlen; i++)
+    {
+        int snp = 0;
+        int j;
+        for (j = 0; j < mlen; j++)
+        {
+            if (in[i + j] == match[j])
+            {
+                snp++;
+            }
+            if (snp == mlen)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void free_ref(Dynamic dyn)
+{
+    free(ref(dyn));
+}
+
+char* str_replace(char* in, char* old, char* new)
+{
+    // Stack* garbage = stack_init(2);
+    char* out = "";
+    int inlen = strlen(in);
+    int oldlen = strlen(old);
+    int i;
+    int j;
+    for (i = 0; i < inlen; i++)
+    {
+        int snp = 0;
+        for (j = 0; j < oldlen; j++)
+        {
+            if (in[i + j] == old[j])
+            {
+                snp++;
+            }
+            if (snp == oldlen)
+            {
+                // char* ancientOut = out;
+                out = str_concat(out, str_sub(in, i, j));
+                // stack_push(garbage, dref(ancientOut));
+                // char* oldOut = out;
+                out = str_concat(out, new);
+                // stack_push(garbage, dref(oldOut));
+                i = i + (oldlen - 1);
+                continue;
+            }
+        }
+    }
+    // Iterator* gi = stack_iterator(garbage);
+    // foreach(gi, *free_ref);
+    // stack_destroy(garbage);
+    // iterator_destroy(gi);
+    return out;
+}
 
 Dynamic str_concat_c_d(Dynamic s, Dynamic c)
 {
