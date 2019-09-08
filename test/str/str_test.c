@@ -74,6 +74,18 @@ int str_copy_test()
     return assertStringEquals(word, str_copy(word));
 }
 
+int str_split_test()
+{
+    char* to_split = "YES, NO";
+    Dynamic split = str_split(to_split, ", ");
+    int split_len = i32(snd(split));
+    char** fragments = ref(fst(split));
+    printf("%s\n", fragments[0]);
+    printf("%s\n", fragments[1]);
+    return (!assertStringContains(fragments[0], ", ")) && (!assertStringContains(fragments[1], ", "))
+        && assertStringEquals(fragments[0], "YES") && assertStringEquals(fragments[1], "NO");
+}
+
 int main()
 {
     test_declareAndRun("Concatenate string works as expected", str_concat_test);
@@ -84,5 +96,6 @@ int main()
     test_declareAndRun("str_sub test", str_sub_test);
     test_declareAndRun("str_replace test", str_replace_test);
     test_declareAndRun("str_copy_test", str_copy_test);
+    test_declareAndRun("str_split removes delimiter and splits properly", str_split_test);
     return 0;
 }

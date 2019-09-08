@@ -55,30 +55,7 @@ char* str_copy(char* s)
 
 bool str_contains(char* in, char* match)
 {
-    int mlen = strlen(match);
-    int inlen = strlen(in);
-    if (mlen > inlen)
-    {
-        return false;
-    }
-    int i;
-    for (i = 0; i < inlen; i++)
-    {
-        int snp = 0;
-        int j;
-        for (j = 0; j < mlen; j++)
-        {
-            if (in[i + j] == match[j])
-            {
-                snp++;
-            }
-            if (snp == mlen)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
+    return strstr(in, match) != NULL;
 }
 
 void free_ref(Dynamic dyn)
@@ -86,41 +63,51 @@ void free_ref(Dynamic dyn)
     free(ref(dyn));
 }
 
-char* str_replace(char* in, char* old, char* new)
+char* str_replace(char* orig, char* rep, char* with)
 {
-    // Stack* garbage = stack_init(2);
-    char* out = "";
-    int inlen = strlen(in);
-    int oldlen = strlen(old);
-    int i;
-    int j;
-    for (i = 0; i < inlen; i++)
-    {
-        int snp = 0;
-        for (j = 0; j < oldlen; j++)
-        {
-            if (in[i + j] == old[j])
-            {
-                snp++;
-            }
-            if (snp == oldlen)
-            {
-                // char* ancientOut = out;
-                out = str_concat(out, str_sub(in, i, j));
-                // stack_push(garbage, dref(ancientOut));
-                // char* oldOut = out;
-                out = str_concat(out, new);
-                // stack_push(garbage, dref(oldOut));
-                i = i + (oldlen - 1);
-                continue;
-            }
-        }
+    char *result; // the return string
+    char *ins;    // the next insert point
+    char *tmp;    // varies
+    int len_rep;  // length of rep (the string to remove)
+    int len_with; // length of with (the string to replace rep with)
+    int len_front; // distance between rep and end of last rep
+    int count;    // number of replacements
+
+    // sanity checks and initialization
+    if (!orig || !rep)
+        return str_copy(orig);
+    len_rep = strlen(rep);
+    if (len_rep == 0)
+        return str_copy(orig); // empty rep causes infinite loop during count
+    if (!with)
+        with = "";
+    len_with = strlen(with);
+
+    // count the number of replacements needed
+    ins = orig;
+    for (count = 0; (tmp = strstr(ins, rep)); ++count) {
+        ins = tmp + len_rep;
     }
-    // Iterator* gi = stack_iterator(garbage);
-    // foreach(gi, *free_ref);
-    // stack_destroy(garbage);
-    // iterator_destroy(gi);
-    return out;
+
+    tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+    if (!result)
+        return str_copy(orig);
+
+    // first time through the loop, all the variable are set correctly
+    // from here on,
+    //    tmp points to the end of the result string
+    //    ins points to the next occurrence of rep in orig
+    //    orig points to the remainder of orig after "end of rep"
+    while (count--) {
+        ins = strstr(orig, rep);
+        len_front = ins - orig;
+        tmp = strncpy(tmp, orig, len_front) + len_front;
+        tmp = strcpy(tmp, with) + len_with;
+        orig += len_front + len_rep; // move to next "end of rep"
+    }
+    strcpy(tmp, orig);
+    return result;
 }
 
 Dynamic str_concat_c_d(Dynamic s, Dynamic c)
@@ -206,6 +193,39 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
         free(intermediate_results[j]);
     }
     return final;
+}
+
+Dynamic str_split(char* str, char* delim)
+{
+    failwith("NOT IMPLEMENTED");
+    char** out = malloc(sizeof(char*));
+    out[0] = str_concat(str, delim);
+    return dref(out);
+}
+
+char* str_trim(char* str)
+{
+    int i;
+    int len = strlen(str);
+    int regular_chars = 0;
+    for (i = 0; i < len; i++)
+    {
+        if (str[i] != ' ' || str[i] != '\n' || str[i] != '\t')
+        {
+            regular_chars++;
+        }
+    }
+    char* out = malloc(sizeof(char) + sizeof(char) * regular_chars);
+    int j = 0;
+    for (i = 0; i < len; i++)
+    {
+        if (str[i] != ' ' || str[i] != '\n' || str[i] != '\t')
+        {
+            out[j++] = str[i];
+        }
+    }
+    out[j] = '\0';
+    return out;
 }
 
 char* to_str(Dynamic d)

@@ -45,6 +45,17 @@ Iterator* iterator_init_lazy(Dynamic (*nextFun)(int), int length)
     return iterator;
 }
 
+Iterator* iterator_init_pointer(void** pointer, Dynamic(*wrapper)(void*), int length)
+{
+    Dynamic* dynamics = malloc(sizeof(Dynamic) * length);
+    int i;
+    for (i = 0; i < length; i++)
+    {
+        dynamics[i] = (*wrapper)(pointer[i]);
+    }
+    return iterator_init_eager(dynamics, length);
+}
+
 bool iterator_hasNext(Iterator* iterator)
 {
     return iterator->position < iterator->length;

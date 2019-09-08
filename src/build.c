@@ -13,6 +13,7 @@
 //but, ironically, it will be using HDC.
 #include "./str/str.h"
 #include "./stack/stack.h"
+#include "./queue/queue.h"
 #include "./list/list.h"
 #include "./fold/fold.h"
 
@@ -24,23 +25,72 @@ typedef struct _SourceFile
 {
     char* path;
     char* filename;
-    List* dependencies;
+    Queue* dependencies;
 } SourceFile;
 
 char* determine_filename(char* path)
 {
-    if ()
+    if (str_contains("\\", path))
     {
-        /* code */
+        path = str_replace(path, "\\", "/");
     }
-    
+    Dynamic split = str_split(path, "/");
+    int split_len = i32(snd(split));
+    char** fragments = (char**) ref(fst(split));
+    char* filename = fragments[split_len - 1];
+    return filename;
+}
+
+char * determine_path_to_dependency(char* own_path, char* dep_rel_path)
+{
+    char* path = str_replace(own_path, "\\", "/");
+    Dynamic split = str_split(path, "/");
+    int split_len = i32(snd(split));
+    char** fragments = (char**) ref(fst(split));
+    char* rel_dir = str_join("/", iterator_init_pointer(fragments, *dstr, split_len - 1), *str);
+    char* dep_rel_source = str_replace(dep_rel_path, ".h", ".c");
+    char* rel_path = str_concat(str_concat_c(rel_dir, '/'), dep_rel_source);
+    if (rel_path[0] == '/')
+    {
+        char* g = rel_path;
+        rel_path = str_concat(".", rel_path);
+        free(g);
+    }
+    return rel_path;
 }
 
 SourceFile* init_sourcefile(char* path)
 {
     SourceFile* s = malloc(sizeof(SourceFile));
     s->path = path;
-    s->filename = 
+    s->filename = determine_filename(path);
+    s->dependencies = queue_init(3);
+    FILE* source = fopen(s->filename, 'r');
+    char line_buffer[512];
+    int r;
+    r = fscanf(source, "%s\n", line_buffer);
+    while (r != EOF)
+    {
+        if (str_contains(line_buffer, "#include"))
+        {
+            if (str_contains(line_buffer, "<"))
+            {
+                goto read_next;
+            }
+            if (str_contains(line_buffer, "\""))
+            {
+                char* rel_path_with_junk = str_sub(line_buffer, strlen("#include"), strlen(line_buffer));
+                char* rel_path = str_trim(rel_path_with_junk);
+                free(rel_path_with_junk);
+                
+            }
+        }
+        read_next: {
+            r = fscanf(source, "%s\n", line_buffer);
+            continue;
+        }
+    }
+    return NULL;
 }
 
 List* get_build_order(SourceFile* sf)

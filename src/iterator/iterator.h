@@ -25,6 +25,8 @@ Iterator* iterator_init_eager(Dynamic* data, int length);
  */
 Iterator* iterator_init_lazy(Dynamic (*nextFun)(int), int length);
 
+Iterator* iterator_init_pointer(void** pointer, Dynamic(*wrapper)(void*), int length);
+
 /**
  * @brief Whether an iterator holds another value.
  * 

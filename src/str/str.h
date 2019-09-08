@@ -33,6 +33,18 @@ Dynamic str_concat_c_d(Dynamic s, Dynamic c);
 
 char* str_join(char* infix, Iterator* iterator,  char* (*to_string)(Dynamic));
 
+/**
+ * @brief Split a string using a given delimeter.
+ * 
+ * @param str The string to split.
+ * @param delim The delimeter string to split on.
+ * @return Dynamic A dynamic pair (Pair<int, char**>) 
+ * where fst is a char** containing the fragments and snd is the total number of fragments.
+ */
+Dynamic str_split(char* str, char* delim);
+
+char* str_trim(char* str);
+
 Iterator* str_iterator(char* string);
 
 bool str_equals(char* strA, char* strB);
