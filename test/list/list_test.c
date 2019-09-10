@@ -86,7 +86,7 @@ int list_concatenateWorks()
     
     char* expected = "HAPPY BIRTHDAY";
     
-    char* actual = str(fold(l, dstr(""), *str_concat_c_d));
+    char* actual = str(fold(l, dstr(""), str_concat_c_d));
     return assertStringEquals(expected, actual);
 }
 

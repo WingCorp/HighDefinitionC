@@ -47,7 +47,7 @@ char * determine_path_to_dependency(char* own_path, char* dep_rel_path)
     Dynamic split = str_split(path, "/");
     int split_len = i32(snd(split));
     char** fragments = (char**) ref(fst(split));
-    char* rel_dir = str_join("/", iterator_init_pointer(fragments, *dstr, split_len - 1), *str);
+    char* rel_dir = str_join("/", iterator_init_pointer(fragments, dstr, split_len - 1), str);
     char* dep_rel_source = str_replace(dep_rel_path, ".h", ".c");
     char* rel_path = str_concat(str_concat_c(rel_dir, '/'), dep_rel_source);
     if (rel_path[0] == '/')
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
         {
             stack_push(custom_flags, dstr(argv[i+3]));
         }
-        flags = str_join(" ", stack_iterator(custom_flags), *str);
+        flags = str_join(" ", stack_iterator(custom_flags), str);
     } else {
         flags = default_flags;
     }

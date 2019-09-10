@@ -13,15 +13,21 @@
  */
 
 #include <stdio.h>
-#include "./../list/list.h"
+#include "./../dynamic/dynamic.h"
+#include "./../option/option.h"
+#include "./../iterator/iterator.h"
 
 typedef struct _Input Input;
 
-Input* input_start(char* path);
+Input* input_start(char* path, const int bufferSize);
 
-List* input_findNext(Input* input, char* format);
+Dynamic input_scan(Input* input, Dynamic (*scanfun)(char*));
 
-char* input_readLine(Input* input);
+Iterator* input_scanN(Input* input, Dynamic (*scanfun)(char*), int n);
+
+Iterator* input_scanEnd(Input* input, Dynamic (*scanfun)(char*));
+
+Option input_readLine(Input* input);
 
 void input_end(Input* input);
 
