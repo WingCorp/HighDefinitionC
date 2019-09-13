@@ -52,8 +52,17 @@ int array_length(Array* array);
  * @return Option an option value, some if index < length and index > 0
  *         else returns none.
  */
-Option array_item(Array* array, int index);
+Dynamic array_item(Array* array, int index);
 
+/**
+ * @brief Get an item from the array.
+ * 
+ * @param array the array.
+ * @param index the index for the array.
+ * @return Option an option value, some if index < length and index > 0
+ *         else returns none.
+ */
+Option array_tryItem(Array* array, int index);
 
 /**
  * @brief Sets an item in the array to a new value.

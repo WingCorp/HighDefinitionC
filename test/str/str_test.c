@@ -3,6 +3,7 @@
 #include "./../test.h"
 #include "./../../src/dynamic/dynamic.h"
 #include "./../../src/stack/stack.h"
+#include "./../../src/array/array.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,10 +78,8 @@ int str_copy_test()
 int str_split_test()
 {
     char* to_split = "YES, NO";
-    Dynamic split = str_split(to_split, ", ");
-    int split_len = i32(snd(split));
-    char** fragments = ref(fst(split));
-    printf("%s\n", fragments[0]);
+    Array* split = str_split(to_split, ", ");
+    printf("%s\n", str(array_item(split, 0)));
     printf("%s\n", fragments[1]);
     return (!assertStringContains(fragments[0], ", ")) && (!assertStringContains(fragments[1], ", "))
         && assertStringEquals(fragments[0], "YES") && assertStringEquals(fragments[1], "NO");

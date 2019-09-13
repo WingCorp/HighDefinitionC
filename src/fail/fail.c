@@ -1,13 +1,6 @@
 #include "fail.h"
-#include <stdlib.h>
-#include <execinfo.h>
-#include <stdio.h>
-
-#define FAIL_RED "\x1b[31m"
-#define FAIL_RESET "\x1b[0m"
 
 void* callstack[1024];
-
 void trace_stack()
 {
     int frames = backtrace(callstack, 1024);

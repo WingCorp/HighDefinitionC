@@ -2,6 +2,10 @@
 #define FAIL_H
 
 #include <stdbool.h>
+#include <stdlib.h>
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 /**
  * @brief The fail-module.
@@ -22,5 +26,19 @@ void fail();
  * @param cause the cause to print before exiting.
  */
 void failwith(char* cause);
+
+#define FAIL_RED "\x1b[31m"
+#define FAIL_RESET "\x1b[0m"
+
+void trace_stack();
+
+#define failf(format, ...)                  \
+    do {                                    \
+        printf(FAIL_RED);                   \
+        printf(format "\n", ##__VA_ARGS__); \
+        printf(FAIL_RESET);                 \
+        trace_stack();                      \
+        exit(EXIT_FAILURE);                 \
+    } while(0)                          
 
 #endif

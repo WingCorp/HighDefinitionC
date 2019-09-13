@@ -42,13 +42,13 @@ int array_length(Array* array)
     return array->length;
 }
 
-Option array_item(Array* array, int index)
+Dynamic array_item(Array* array, int index)
 {
     if (index >= 0 && index < array->length)
     {
         return some(array->data[index]);
     }
-    else return none();
+    else failwith("Index out of bounds!");
 }
 
 void array_setItem(Array* array, int index, Dynamic value)

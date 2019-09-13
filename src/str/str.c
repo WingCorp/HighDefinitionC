@@ -193,7 +193,7 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
     return final;
 }
 
-Dynamic str_split(char* str, char* delim)
+Array* str_split(char* str, char* delim)
 {
     Queue* batches = queue_init(2);
     int len = strlen(str);
@@ -213,16 +213,18 @@ Dynamic str_split(char* str, char* delim)
             }
             if (d == dlen)
             {
-                queue_add(batches, dstr(str_sub(split_start, split_start, last_non_delim + 1)));
+                queue_add(batches, dstr(str_sub(current, split_start, last_non_delim + 1)));
+                if (last_non_delim + 1 == len)
+                {
+                    break;
+                }
+                current = str_sub(str, last_non_delim + 1, len);
+                split_start = last_non_delim + 1;
             }
         }
         i = 0;
-    }
-    //Just a comment to commit to git.
-    failwith("NOT IMPLEMENTED");
-    char** out = malloc(sizeof(char*));
-    out[0] = str_concat(str, delim);
-    return dref(out);
+    }    
+    return array_initFromIterator(queue_iterator(batches));
 }
 
 char* str_trim(char* str)

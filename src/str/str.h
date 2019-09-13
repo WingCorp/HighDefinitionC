@@ -38,10 +38,10 @@ char* str_join(char* infix, Iterator* iterator,  char* (*to_string)(Dynamic));
  * 
  * @param str The string to split.
  * @param delim The delimeter string to split on.
- * @return Dynamic A dynamic pair (Pair<int, char**>) 
+ * @return Array an Array of strings.
  * where fst is a char** containing the fragments and snd is the total number of fragments.
  */
-Dynamic str_split(char* str, char* delim);
+Array* str_split(char* str, char* delim);
 
 char* str_trim(char* str);
 
