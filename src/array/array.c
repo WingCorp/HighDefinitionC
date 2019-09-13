@@ -17,7 +17,7 @@ Array* array_empty(int length)
 {
     if(length <= 0)
     {
-        failwith("Cannot initialize array of length <= 0!");
+        failwith("Cannot initialize array of length <= 0!\n");
     }
     Array* array = malloc(sizeof(Array));
     array->data = malloc(sizeof(Dynamic) * length);
@@ -46,9 +46,18 @@ Dynamic array_item(Array* array, int index)
 {
     if (index >= 0 && index < array->length)
     {
+        return array->data[index];
+    }
+    else failwith("Index %d out of bounds [0;%d[!\n", index, array->length);
+}
+
+Option array_tryItem(Array* array, int index)
+{
+    if (index >= 0 && index < array->length)
+    {
         return some(array->data[index]);
     }
-    else failwith("Index out of bounds!");
+    else return none(array->data[index]);
 }
 
 void array_setItem(Array* array, int index, Dynamic value)
@@ -59,7 +68,7 @@ void array_setItem(Array* array, int index, Dynamic value)
     }
     else
     {
-        failwith("Cannot set item to index that is out of bounds!");
+        failwith("Index %d out of bounds [0;%d[!\n", index, array->length);
     }
 }
 

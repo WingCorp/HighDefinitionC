@@ -20,12 +20,3 @@ void fail()
     trace_stack();
     exit(EXIT_FAILURE);
 }
-
-void failwith(char* cause)
-{
-    printf(FAIL_RED);
-    printf("%s\n", cause);
-    printf(FAIL_RESET);
-    trace_stack();
-    exit(EXIT_FAILURE);
-}

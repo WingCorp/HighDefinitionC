@@ -20,22 +20,21 @@
  */
 void fail();
 
-/**
- * @brief Print the error cause and exit the program with an error value.
- * 
- * @param cause the cause to print before exiting.
- */
-void failwith(char* cause);
-
 #define FAIL_RED "\x1b[31m"
 #define FAIL_RESET "\x1b[0m"
 
 void trace_stack();
 
-#define failf(format, ...)                  \
+/**
+ * @brief Print the error cause and exit the program with an error value.
+ * 
+ * @param cause to print before exiting. Use this like you would use printf.
+ * @param VAR_ARGS, whatever you want it to say in your failure output.
+ */
+#define failwith(format, ...)               \
     do {                                    \
         printf(FAIL_RED);                   \
-        printf(format "\n", ##__VA_ARGS__); \
+        printf(format, ##__VA_ARGS__);      \
         printf(FAIL_RESET);                 \
         trace_stack();                      \
         exit(EXIT_FAILURE);                 \
