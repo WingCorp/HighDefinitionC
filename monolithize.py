@@ -17,6 +17,27 @@ def load_file(file_path):
         pass
     return (libs, ''.join(lines))
 
+def remove_unused(single_source):
+    lines = single_source.splitlines
+    main_start = 0
+    main_end = 0
+    for i, line in enumerate(lines):
+        if "int" in line and "main(" in line:
+            main_start = i
+    for i, line in enumerate(lines):
+        block_depth = -1
+        if line <= main_start:
+            if "{" in line:
+                block_depth += 1
+            if "}" in line:
+                block_depth -= 1
+            if block_depth == 0:
+                main_end = i
+    
+    main_method = lines[main_start:main_end + 1]
+    #fuckit, i'm not gonna make it.
+    pass
+
 def monolithize(hdc_header_path, output_path):
 
     single_source = ""
@@ -46,12 +67,6 @@ def monolithize(hdc_header_path, output_path):
     std_libs = reversed(list(set(std_libs)))
     for lib in std_libs:
         single_source = lib + '\n' + single_source
-    
-    with open(hdc_header_path.replace('.h', '.c')) as source:
-        for line in source:
-            if line.startswith("#include"):
-                continue
-            single_source += line
 
     with open(output_path, 'w') as output:
         output.write(single_source)

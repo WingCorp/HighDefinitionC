@@ -19,13 +19,19 @@
 
 typedef struct _Input Input;
 
-Input* input_start(char* path, const int bufferSize);
+Input* input_fromFile(FILE* file, int bufferSize);
+
+Input* input_fromPath(char* path, int bufferSize);
 
 Dynamic input_scan(Input* input, Dynamic (*scanfun)(char*));
 
 Iterator* input_scanN(Input* input, Dynamic (*scanfun)(char*), int n);
 
+void input_scanNHandler(Input* input, void (*lineHandler)(char*), int n);
+
 Iterator* input_scanEnd(Input* input, Dynamic (*scanfun)(char*));
+
+void input_scanEndHandler(Input* input, void (*lineHandler)(char*));
 
 Option input_readLine(Input* input);
 

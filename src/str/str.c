@@ -1,12 +1,9 @@
 #include "str.h"
+#include "./../fail/fail.h"
+#include "./../math/math.h"
+#include "./../array/array.h"
 #include "./../fold/fold.h"
 #include "./../iterator/iterator.h"
-#include "./../array/array.h"
-#include "./../math/math.h"
-#include "./../fail/fail.h"
-#include "./../stack/stack.h"
-#include "./../foreach/foreach.h"
-
 
 #include <stdlib.h>
 #include <string.h>
@@ -242,11 +239,11 @@ char* to_str(Dynamic d)
             }
             break;
         case CHAR:
-            out = malloc(sizeof(char));
+            out = malloc(sizeof(char) + sizeof(char));
             sprintf(out, "%c", chr(d));
             break;
         case INT:
-            out = malloc(sizeof(char)*(ilog10(i32(d)) + 1));
+            out = malloc(sizeof(char) + sizeof(char)*(ilog10(i32(d)) + 1));
             sprintf(out, "%d", i32(d));
             break;
         case STRING:
@@ -255,7 +252,7 @@ char* to_str(Dynamic d)
         case REFERENCE:
         {
             uintptr_t p = (uintptr_t) ref(d);
-            out = malloc(sizeof(char)*(ilog10(p) + 1));
+            out = malloc(sizeof(char) + sizeof(char)*(ilog10(p) + 1));
             sprintf(out, "%d", (int)p);
             break;
         }

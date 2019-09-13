@@ -13,9 +13,16 @@ typedef struct _Input
     char *buffer;
 } Input;
 
-Input *input_start(char *path, int bufferSize)
+Input* input_fromFile(FILE* file, int bufferSize)
 {
     Input* inp = malloc(sizeof(Input));
+    inp->file = file;
+    inp->buffer = malloc(sizeof(char) * bufferSize);
+    return inp;
+}
+
+Input *input_fromPath(char *path, int bufferSize)
+{
     FILE* file = fopen(path, "r");
     if ((void *)file == NULL)
     {
@@ -25,9 +32,7 @@ Input *input_start(char *path, int bufferSize)
                 "', check that the file is not in use and that the path is correct."));
     }
 
-    inp->file = file;
-    inp->buffer = malloc(sizeof(char) * bufferSize);
-    return inp;
+    return input_fromFile(file, bufferSize);
 }
 
 Option input_readLine(Input *input)
@@ -62,6 +67,16 @@ Iterator *input_scanEnd(Input *input, Dynamic (*scanfun)(char *))
     return queue_iterator(q);
 }
 
+void input_scanEndHandler(Input* input, void (*lineHandler)(char*))
+{
+    Option currentLineOpt = input_readLine(input);
+    while (currentLineOpt.type != NONE)
+    {
+        (*lineHandler)(str(coerce(currentLineOpt)));
+        currentLineOpt = input_readLine(input);
+    }
+}
+
 Iterator *input_scanN(Input *input, Dynamic (*scanfun)(char *), int n)
 {
     Queue* q = queue_init(n);
@@ -80,6 +95,24 @@ Iterator *input_scanN(Input *input, Dynamic (*scanfun)(char *), int n)
         currentLineOpt = input_readLine(input);
     }
     return queue_iterator(q);
+}
+
+void input_scanNHandler(Input* input, void (*lineHandler)(char*), int n)
+{
+    Option currentLineOpt = input_readLine(input);
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        if (currentLineOpt.type == NONE)
+        {
+            char *format = "input_scan_n() reach end of file after %d lines, but expected %d!";
+            char *msgBuffer = malloc(sizeof(char) + sizeof(char) * (ilog10(n) + 1) * 2 + strlen(format));
+            sprintf(msgBuffer, format, i, n);
+            failwith(msgBuffer);
+        }
+        (*lineHandler)(str(coerce(currentLineOpt)));
+        currentLineOpt = input_readLine(input);
+    }
 }
 
 void input_end(Input *input)
