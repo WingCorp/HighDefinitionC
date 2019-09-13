@@ -2,6 +2,7 @@
 #include "./../fail/fail.h"
 #include "./../math/math.h"
 #include "./../array/array.h"
+#include "./../queue/queue.h"
 #include "./../fold/fold.h"
 #include "./../iterator/iterator.h"
 
@@ -194,6 +195,29 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
 
 Dynamic str_split(char* str, char* delim)
 {
+    Queue* batches = queue_init(2);
+    int len = strlen(str);
+    int dlen = strlen(delim);
+    int split_start = 0;
+    char* current = str_copy(str);
+    int i;
+    while (true)
+    {
+        int last_non_delim = strcspn(current, delim);
+        int d = 0;
+        for (i = 0; i < dlen; i++)
+        {
+            if (current[last_non_delim + i] == delim[i])
+            {
+                d++;
+            }
+            if (d == dlen)
+            {
+                queue_add(batches, dstr(str_sub(split_start, split_start, last_non_delim + 1)));
+            }
+        }
+        i = 0;
+    }
     failwith("NOT IMPLEMENTED");
     char** out = malloc(sizeof(char*));
     out[0] = str_concat(str, delim);
