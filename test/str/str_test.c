@@ -80,9 +80,9 @@ int str_split_test()
     char* to_split = "YES, NO";
     Array* split = str_split(to_split, ", ");
     printf("%s\n", str(array_item(split, 0)));
-    printf("%s\n", fragments[1]);
-    return (!assertStringContains(fragments[0], ", ")) && (!assertStringContains(fragments[1], ", "))
-        && assertStringEquals(fragments[0], "YES") && assertStringEquals(fragments[1], "NO");
+    printf("%s\n", str(array_item(split, 1)));
+    return (!assertStringContains(str(array_item(split, 0)), ", ")) && (!assertStringContains(str(array_item(split, 1)), ", "))
+        && assertStringEquals(str(array_item(split, 0)), "YES") && assertStringEquals(str(array_item(split, 1)), "NO");
 }
 
 int main()
