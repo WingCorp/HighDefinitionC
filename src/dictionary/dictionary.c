@@ -156,7 +156,7 @@ void dict_remove_s(Dict* dict, char* key)
 Dict* dict_from(int count, Dynamic pair, ...)
 {
     if (t_fst(pair) != ULONG) {
-        failwith("Left type of every pair must be an unsigned long, but was %d\n", t_fst(pair));
+        failwithf("Left type of every pair must be an unsigned long, but was %d\n", t_fst(pair));
     }
     
     va_list args;
@@ -169,7 +169,7 @@ Dict* dict_from(int count, Dynamic pair, ...)
     {
         Dynamic param = va_arg(args, Dynamic);
         if (t_fst(param) != ULONG) {
-            failwith("Left type of every pair must be an unsigned long, but was %d\n", t_fst(param));
+            failwithf("Left type of every pair must be an unsigned long, but was %d\n", t_fst(param));
         }
         dict_put(dict, ui64(fst(param)), snd(param));
     }

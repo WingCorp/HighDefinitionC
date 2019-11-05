@@ -48,7 +48,7 @@ Set* set_from(int size, Comparable value, ...);
  * @param ... The remaining arguments.
  * @return Set* A new set.
  */
-Set* set_from_ds(int size, Dynamic value, ...);
+Set* set_fromDynamics(int size, Dynamic value, ...);
 
 /**
  * @brief Create a new set from a variable number of 32-bit integer arguments.
@@ -58,7 +58,7 @@ Set* set_from_ds(int size, Dynamic value, ...);
  * @param ... The remaining arguments.
  * @return Set* A new set.
  */
-Set* set_from_i32s(int size, int value, ...);
+Set* set_fromIntegers(int size, int value, ...);
 
 /**
  * @brief Create a new set from a variable number of 64-bit integer arguments.
@@ -68,7 +68,7 @@ Set* set_from_i32s(int size, int value, ...);
  * @param ... The remaining arguments.
  * @return Set* A new set.
  */
-Set* set_from_i64s(int size, long value, ...);
+Set* set_fromLongs(int size, long value, ...);
 
 /**
  * @brief Create a new set from a variable number of char arguments.
@@ -78,7 +78,7 @@ Set* set_from_i64s(int size, long value, ...);
  * @param ... The remaining arguments.
  * @return Set* A new set.
  */
-Set* set_from_chrs(int size, char value, ...);
+Set* set_fromChars(int size, char value, ...);
 
 /**
  * @brief Create a new set from a variable number of char-pointer arguments.
@@ -88,7 +88,15 @@ Set* set_from_chrs(int size, char value, ...);
  * @param ... The remaining arguments.
  * @return Set* A new set.
  */
-Set* set_from_strs(int size, char* value, ...);
+Set* set_fromStrings(int size, char* value, ...);
+
+/**
+ * @brief Creae a new from an Iterator.
+ * 
+ * @param iterator The iterator to create the set from.
+ * @return Set* The set containing the values stored in the iterator.
+ */
+Set* set_fromIterator(Iterator* iterator);
 
 /**
  * @brief Initialize a Set with a fixed size and initFunction.
@@ -121,7 +129,7 @@ void set_add(Set* set, Comparable item);
  * @param set The set.
  * @param item The item to add.
  */
-void set_add_d(Set* set, Dynamic item);
+void set_addDynamic(Set* set, Dynamic item);
 
 /**
  * @brief Add a 32-bit integer value to a set.
@@ -129,7 +137,7 @@ void set_add_d(Set* set, Dynamic item);
  * @param set The set.
  * @param item The item to add.
  */
-void set_add_i32(Set* set, int item);
+void set_addInteger(Set* set, int item);
 
 /**
  * @brief Add a 64-bit integer value to a set.
@@ -137,7 +145,7 @@ void set_add_i32(Set* set, int item);
  * @param set The set.
  * @param item The item to add.
  */
-void set_add_i64(Set* set, long item);
+void set_addLong(Set* set, long item);
 
 /**
  * @brief Add a char value to a set.
@@ -145,7 +153,7 @@ void set_add_i64(Set* set, long item);
  * @param set The set.
  * @param item The item to add.
  */
-void set_add_chr(Set* set, char item);
+void set_addChar(Set* set, char item);
 
 /**
  * @brief Add a char-pointer to a set.
@@ -153,7 +161,7 @@ void set_add_chr(Set* set, char item);
  * @param set The set.
  * @param item The item to add.
  */
-void set_add_str(Set* set, char* item);
+void set_addString(Set* set, char* item);
 
 /**
  * @brief Determine if a set contains an item.

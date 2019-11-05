@@ -14,6 +14,7 @@
 
 #include <stdbool.h>
 #include "./../iterator/iterator.h"
+#include "./../array/array.h"
 
 bool str_contains(char* in, char* match);
 

@@ -48,7 +48,7 @@ Dynamic array_item(Array* array, int index)
     {
         return array->data[index];
     }
-    else failwith("Index %d out of bounds [0;%d[!\n", index, array->length);
+    else failwithf("Index %d out of bounds [0;%d[!\n", index, array->length);
 }
 
 Option array_tryItem(Array* array, int index)
@@ -68,7 +68,7 @@ void array_setItem(Array* array, int index, Dynamic value)
     }
     else
     {
-        failwith("Index %d out of bounds [0;%d[!\n", index, array->length);
+        failwithf("Index %d out of bounds [0;%d[!\n", index, array->length);
     }
 }
 

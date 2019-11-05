@@ -58,4 +58,19 @@ Option success(Option opt, Option (*optFunc)(Dynamic));
  */
 Dynamic coerce(Option opt);
 
+/**
+ * @brief Checks if an option has the type SOME.
+ *  
+ * @return int 1 if it is, 0 otherwise
+ */
+#define isSome(option) option.type == SOME
+
+/**
+ * @brief Checks if an option has the type NONE.
+ * 
+ * @return int 1 if it is, 0 otherwise
+ */
+#define isNone(option) option.type == NONE
+
+
 #endif

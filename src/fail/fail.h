@@ -25,13 +25,22 @@ void fail();
 
 void trace_stack();
 
+#define failwith(message)   \
+    do {                    \
+        printf(FAIL_RED);   \
+        printf(message);    \
+        printf(FAIL_RESET); \
+        trace_stack();      \
+        exit(EXIT_FAILURE); \
+    } while (0)
+
 /**
  * @brief Print the error cause and exit the program with an error value.
  * 
  * @param cause to print before exiting. Use this like you would use printf.
  * @param VAR_ARGS, whatever you want it to say in your failure output.
  */
-#define failwith(format, ...)               \
+#define failwithf(format, ...)              \
     do {                                    \
         printf(FAIL_RED);                   \
         printf(format, ##__VA_ARGS__);      \

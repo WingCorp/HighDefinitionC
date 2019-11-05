@@ -22,27 +22,27 @@ void set_add(Set* set, Comparable item)
     tree_put(set->tree, item, item.value);
 }
 
-void set_add_d(Set* set, Dynamic item)
+void set_addDynamic(Set* set, Dynamic item)
 {
     tree_put(set->tree, comparable(item), item);
 }
 
-void set_add_i32(Set* set, int item)
+void set_addInteger(Set* set, int item)
 {
     tree_put(set->tree, comparable(di32(item)), di32(item));
 }
 
-void set_add_i64(Set* set, long item)
+void set_addLong(Set* set, long item)
 {
     tree_put(set->tree, comparable(di64(item)), di64(item));
 }
 
-void set_add_chr(Set* set, char item)
+void set_addChar(Set* set, char item)
 {
     tree_put(set->tree, comparable(dchr(item)), dchr(item));
 }
 
-void set_add_str(Set* set, char* item)
+void set_addString(Set* set, char* item)
 {
     tree_put(set->tree, comparable(dstr(item)), dstr(item));
 }
@@ -91,7 +91,7 @@ Set* set_from(int size, Comparable comp, ...)
     return set;
 }
 
-Set* set_from_ds(int size, Dynamic comp, ...)
+Set* set_fromDynamics(int size, Dynamic comp, ...)
 {
     va_list args;
     va_start(args, comp);
@@ -107,7 +107,7 @@ Set* set_from_ds(int size, Dynamic comp, ...)
     return set;
 }
 
-Set* set_from_i32s(int size, int value, ...)
+Set* set_fromIntegers(int size, int value, ...)
 {
     va_list args;
     va_start(args, value);
@@ -123,7 +123,7 @@ Set* set_from_i32s(int size, int value, ...)
     return set;
 }
 
-Set* set_from_i64s(int size, long value, ...)
+Set* set_fromLongs(int size, long value, ...)
 {
     va_list args;
     va_start(args, value);
@@ -139,7 +139,7 @@ Set* set_from_i64s(int size, long value, ...)
     return set;
 }
 
-Set* set_from_chrs(int size, char value, ...)
+Set* set_fromChars(int size, char value, ...)
 {
     va_list args;
     va_start(args, value);
@@ -155,7 +155,7 @@ Set* set_from_chrs(int size, char value, ...)
     return set;
 }
 
-Set* set_from_strs(int size, char* value, ...)
+Set* set_fromStrings(int size, char* value, ...)
 {
     va_list args;
     va_start(args, value);
@@ -168,6 +168,17 @@ Set* set_from_strs(int size, char* value, ...)
         set_add(set, comparable(dstr(arg)));
     }
     va_end(args);
+    return set;
+}
+
+Set* set_fromIterator(Iterator* iterator)
+{
+    Set* set = set_empty();
+    Option o;
+    for (o = iterator_next(iterator); isSome(o); o = iterator_next(iterator))
+    {
+        set_add(set, comparable(coerce(o)));
+    }
     return set;
 }
 

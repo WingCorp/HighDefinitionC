@@ -17,15 +17,15 @@ char* str_sub(char* s, int start, int end)
     int slen = strlen(s);
     if (start < 0 || start >= slen)
     {
-        failwith("Illegal argument: Call to str_sub(), start of %d was out of bounds [1;%d[.\n", start, slen);
+        failwithf("Illegal argument: Call to str_sub(), start of %d was out of bounds [1;%d[.\n", start, slen);
     }
     if (end < 0 || end > slen)
     {
-        failwith("Illegal argument: Call to str_sub(), end of %d out of bounds [1;%d[.\n", end, slen);
+        failwithf("Illegal argument: Call to str_sub(), end of %d out of bounds [1;%d[.\n", end, slen);
     }    
     if (end < start)
     {
-        failwith("Illegal argument: Call to str_sub() where start of %d > end of %d.\n", start, end);
+        failwithf("Illegal argument: Call to str_sub() where start of %d > end of %d.\n", start, end);
     }
     char* out = malloc(sizeof(char) + sizeof(char) * (end - start));
     int i;
