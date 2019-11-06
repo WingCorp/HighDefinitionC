@@ -184,12 +184,7 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
         acc = str_concat(acc, infix_element);
     }
     char* final = acc;
-    free(intermediate_results[0]);
-    int j;
-    for (j = 1; j < i; j++)
-    {
-        free(intermediate_results[j]);
-    }
+    free(intermediate_results);
     return final;
 }
 
@@ -197,33 +192,20 @@ Array* str_split(char* str, char* delim)
 {
     Queue* batches = queue_init(2);
     int len = strlen(str);
-    int dlen = strlen(delim);
-    int split_start = 0;
-    char* current = str_copy(str);
+    char sub = (char) 26;
+    char* replaced = str_replace(str, delim, str_concat_c("", sub));
+    int start = 0;
     int i;
-    while (true)
+    for (i = 0; i < len; i++)
     {
-        int last_non_delim = strcspn(current, delim);
-        int d = 0;
-        for (i = 0; i < dlen; i++)
+        char c = replaced[i];
+        if (c == sub)
         {
-            if (current[last_non_delim + i] == delim[i])
-            {
-                d++;
-            }
-            if (d == dlen)
-            {
-                queue_add(batches, dstr(str_sub(current, split_start, last_non_delim + 1)));
-                if (last_non_delim + 1 == len)
-                {
-                    break;
-                }
-                current = str_sub(str, last_non_delim + 1, len);
-                split_start = last_non_delim + 1;
-            }
+            char* batch = str_sub(replaced, start, i);
+            queue_add(batches, dstr(batch));
+            start = i + 1;
         }
-        i = 0;
-    }    
+    }
     return array_initFromIterator(queue_iterator(batches));
 }
 

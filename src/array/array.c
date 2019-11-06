@@ -86,6 +86,7 @@ Array* array_initFromIterator(Iterator* it)
         array->data[i] = iterator_next(it).value;
         i += 1;
     }
+    iterator_destroy(it);
     return array;
 }
 
