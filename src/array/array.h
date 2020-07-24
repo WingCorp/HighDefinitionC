@@ -13,7 +13,6 @@
 
 #include "./../dynamic/dynamic.h"
 #include "./../iterator/iterator.h"
-#include "./../option/option.h"
 
 typedef struct _Array Array;
 
@@ -62,7 +61,7 @@ Dynamic array_item(Array* array, int index);
  * @return Option an option value, some if index < length and index > 0
  *         else returns none.
  */
-Option array_tryItem(Array* array, int index);
+Dynamic array_tryItem(Array* array, int index);
 
 /**
  * @brief Sets an item in the array to a new value.

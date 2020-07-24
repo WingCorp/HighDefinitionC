@@ -19,7 +19,6 @@
  */
 
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../hash/hash.h"
 
 #include <stdarg.h>
@@ -64,7 +63,7 @@ bool dict_contains(Dict* dict, unsigned long key);
  * @param key The key to get by.
  * @return Option An option, possibly containing a value.
  */
-Option dict_get(Dict* dict, unsigned long key);
+Dynamic dict_get(Dict* dict, unsigned long key);
 
 /**
  * @brief Store the given value by the given key in the dictionary.
@@ -128,7 +127,7 @@ bool dict_isEmpty(Dict* dict);
  * @param key The key to get by.
  * @return Option An option, possibly containing a value.
  */
-Option dict_get_s(Dict* dict, char* key);
+Dynamic dict_get_s(Dict* dict, char* key);
 
 /**
  * @brief Store the given value by the given key string in the dictionary.

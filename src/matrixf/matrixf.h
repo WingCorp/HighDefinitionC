@@ -15,7 +15,6 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#include "./../option/option.h"
 #include "./../vectorf/vectorf.h"
 
 typedef struct _Matrixf Matrixf;
@@ -40,7 +39,7 @@ Matrixf* matrixf_reducedRowEchelon(Matrixf* matrix);
 
 bool matrixf_isConsistent(Matrixf* matrix);
 
-Option/*<dref<Matrixf> option>*/ matrixf_parametricSolution(Matrixf* matrix);
+Dynamic/*<dref<Matrixf> option>*/ matrixf_parametricSolution(Matrixf* matrix);
 
 double matrixf_calculateDeterminant(Matrixf* matrix);
 

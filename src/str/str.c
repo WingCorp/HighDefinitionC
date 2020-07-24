@@ -171,12 +171,12 @@ char* str_join(char* infix, Iterator* iterator, char* (*to_string)(Dynamic))
     {
         return blank;
     }
-    char* acc = str_concat(blank, (*to_string)(iterator_next(iterator).value));
+    char* acc = str_concat(blank, (*to_string)(coerce(iterator_next(iterator))));
     intermediate_results[0] = acc;
     int i = 1;
     while (iterator_hasNext(iterator))
     {
-        Dynamic element = iterator_next(iterator).value;
+        Dynamic element = coerce(iterator_next(iterator));
         char* element_str = (*to_string)(element);
         char* infix_element = str_concat(infix, element_str);
         intermediate_results[i++] = acc;

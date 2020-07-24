@@ -11,7 +11,6 @@
 
 #include "./../dynamic/dynamic.h"
 #include "./../iterator/iterator.h"
-#include "./../option/option.h"
 
 #include <stdarg.h>
 
@@ -58,7 +57,7 @@ List* list_concatenate(List* listA, List* listB);
  * @param list the list to take the head from.
  * @return Option the head element.
  */
-Option list_head(List* list);
+Dynamic list_head(List* list);
 
 /**
  * @brief Retrieves the tail of the list.
@@ -75,7 +74,7 @@ List* list_tail(List* list);
  * @param index the index
  * @return Option some item, if any
  */
-Option list_item(List* list, int index);
+Dynamic list_item(List* list, int index);
 
 /**
  * @brief Retrieves the number of elements in the list.

@@ -21,8 +21,8 @@ Dynamic countOnes(Dynamic acc, Dynamic i)
 
 int set_setOfIntsWork()
 {
-    Set* s = set_from_i32s(5, 0, 1, 2, 3, 4);
-    set_add_i32(s, 1);
+    Set* s = set_fromIntegers(5, 0, 1, 2, 3, 4);
+    set_addInteger(s, 1);
     Iterator* i = set_iterator(s);
     int expected = 1;
     int actual = i32(fold(i, di32(0), *countOnes));
@@ -40,8 +40,8 @@ Dynamic countHAs(Dynamic acc, Dynamic s)
 
 int set_setOfStringsWork()
 {
-    Set* s = set_from_strs(3, "HA", "JA", "NEJ");
-    set_add_str(s, "HA");
+    Set* s = set_fromStrings(3, "HA", "JA", "NEJ");
+    set_addString(s, "HA");
     Iterator* i = set_iterator(s);
     int expected = 1;
     int actual = i32(fold(i, di32(0), *countHAs));

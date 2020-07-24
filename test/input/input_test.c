@@ -14,8 +14,8 @@
 
 int input_startEndTest()
 {
-    Input* inp = input_start("./out/test/input_data.txt", 64);
-    Option lineOpt = input_readLine(inp);
+    Input* inp = input_fromPath("./out/test/input_data.txt", 64);
+    Dynamic lineOpt = input_readLine(inp);
     char* string = str(coerce(lineOpt));
     input_end(inp);
     return assertStringEquals("4", string);
@@ -30,7 +30,7 @@ Dynamic scanLength(char* str)
 
 int input_scanTest()
 {
-    Input* inp = input_start("./out/test/input_data.txt", 64);
+    Input* inp = input_fromPath("./out/test/input_data.txt", 64);
     int length = i32(input_scan(inp, scanLength));
     input_end(inp);
     return assertIntEquals(4, length);
@@ -46,7 +46,7 @@ Dynamic scanLine(char* str)
 
 int input_scanTestScanNLines()
 {
-    Input* inp = input_start("./out/test/input_data.txt", 64);
+    Input* inp = input_fromPath("./out/test/input_data.txt", 64);
     int length = i32(input_scan(inp, scanLength));
     Iterator* scannedItems = input_scanN(inp, scanLine, length);
     char* domain = str(snd(coerce(iterator_next(scannedItems))));

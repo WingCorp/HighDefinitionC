@@ -66,10 +66,10 @@ Set* set_initFun(int size, Comparable *(initFun)(int))
 Set* set_init(Iterator* iterator)
 {
     Set* set = set_empty();
-    Option itemOpt = iterator_next(iterator);
-    while(itemOpt.type == SOME)
+    Dynamic itemOpt = iterator_next(iterator);
+    while(isSome(itemOpt))
     {
-        set_add(set, comparable(itemOpt.value));
+        set_add(set, comparable(coerce(itemOpt)));
         itemOpt = iterator_next(iterator);
     }
     return set;
@@ -174,7 +174,7 @@ Set* set_fromStrings(int size, char* value, ...)
 Set* set_fromIterator(Iterator* iterator)
 {
     Set* set = set_empty();
-    Option o;
+    Dynamic o;
     for (o = iterator_next(iterator); isSome(o); o = iterator_next(iterator))
     {
         set_add(set, comparable(coerce(o)));

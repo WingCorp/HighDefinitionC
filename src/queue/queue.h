@@ -11,7 +11,6 @@
  */
 
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../iterator/iterator.h"
 
 typedef struct _Queue Queue;
@@ -45,7 +44,7 @@ void queue_add(Queue* queue, Dynamic dyn);
  * @param queue The Queue to remove from.
  * @return Option The element polled, Some if any, otherwise None.
  */
-Option queue_poll(Queue* queue);
+Dynamic queue_poll(Queue* queue);
 
 /**
  * @brief Peeks at the first element in the queue without disturbing it.
@@ -53,7 +52,7 @@ Option queue_poll(Queue* queue);
  * @param queue The Queue to peek at.
  * @return Option The peeked element, if any.
  */
-Option queue_peek(Queue* queue);
+Dynamic queue_peek(Queue* queue);
 
 /**
  * @brief Returns the size of the Queue.

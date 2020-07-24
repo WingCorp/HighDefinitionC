@@ -14,7 +14,6 @@
 
 #include <stdio.h>
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../iterator/iterator.h"
 
 typedef struct _Input Input;
@@ -33,7 +32,7 @@ Iterator* input_scanEnd(Input* input, Dynamic (*scanfun)(char*));
 
 void input_scanEndHandler(Input* input, void (*lineHandler)(char*));
 
-Option input_readLine(Input* input);
+Dynamic input_readLine(Input* input);
 
 void input_end(Input* input);
 

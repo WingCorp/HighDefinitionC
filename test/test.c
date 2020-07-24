@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <signal.h>
+#ifndef WIN32
+#include <unistd.h>
 #include <sys/wait.h>
 
 int test_runInSubProcess(void (*testFunction) (void), int (*assertFunction) (char* output))
@@ -50,3 +51,4 @@ void test_declareAndRun(char* testName, int (*testFunction) (void))
         printf("Test failed!\n");
     }
 }
+#endif

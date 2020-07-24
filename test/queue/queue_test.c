@@ -34,12 +34,12 @@ int queue_addPollTest()
     Queue* queue = queue_init(queueCap);
     int val = 10;
     queue_add(queue, di32(val));
-    Option opt = queue_poll(queue);
+    Dynamic opt = queue_poll(queue);
     queue_destroy(queue);
     return
-        assertTrue("opt.type == SOME", opt.type == SOME)
+        assertTrue("opt.type == SOME", isSome(opt))
         &&
-        assertIntEquals(val, i32(opt.value));
+        assertIntEquals(val, i32(coerce(opt)));
 }
 
 Dynamic squareInts(Dynamic intDyn)
@@ -55,9 +55,9 @@ int queue_mapToSquares()
     queue_add(queue, di32(3));
     Queue* squaredqueue = queue_map(queue, squareInts);
     queue_destroy(queue);
-    int one = i32(queue_poll(squaredqueue).value);
-    int four = i32(queue_poll(squaredqueue).value);
-    int nine = i32(queue_poll(squaredqueue).value);
+    int one = i32(coerce(queue_poll(squaredqueue)));
+    int four = i32(coerce(queue_poll(squaredqueue)));
+    int nine = i32(coerce(queue_poll(squaredqueue)));
     return
         assertIntEquals(1, one)
         &&

@@ -1,17 +1,17 @@
 #include "option.h"
 #include "./../fail/fail.h"
 
-Option none()
+Dynamic none()
 {
-    return (Option) { .type = NONE };
+    return (Dynamic) { .type = NONE };
 }
 
-Option some(Dynamic value)
+Dynamic some(Dynamic value)
 {
-    return (Option) { .type = SOME, .value = value };
+    return (Dynamic) { .type = SOME, .value = value };
 }
 
-Option success(Option opt, Option (*optFunc)(Dynamic))
+Dynamic success(Dynamic opt, Dynamic (*optFunc)(Dynamic))
 {
     if (opt.type == NONE)
     {
@@ -20,7 +20,7 @@ Option success(Option opt, Option (*optFunc)(Dynamic))
     return (*optFunc)(opt.value);
 }
 
-Dynamic coerce(Option opt)
+Dynamic coerce(Dynamic opt)
 {
     if (opt.type == NONE)
     {

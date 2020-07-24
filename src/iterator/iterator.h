@@ -2,7 +2,6 @@
 #define ITERATOR_H
 
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 
 typedef struct _Iterator Iterator;
 
@@ -41,7 +40,7 @@ bool iterator_hasNext(Iterator* iterator);
  * @param iterator the iterator to get the value from.
  * @return Option some if there is a value, none if there isn't.
  */
-Option iterator_next(Iterator* iterator);
+Dynamic iterator_next(Iterator* iterator);
 
 /**
  * @brief How many entries that remain in the iterator.

@@ -10,6 +10,7 @@
  */
 #include "tree.h"
 
+#include "./../dynamic/dynamic.h"
 #include "./../iterator/iterator.h"
 #include "./../list/list.h"
 #include "./../fold/fold.h"
@@ -138,7 +139,7 @@ int tree_size(Tree* tree)
     return size(tree->root);
 }
 
-Option get(Node* n, Comparable key)
+Dynamic get(Node* n, Comparable key)
 {
     if (n == NULL)
     {
@@ -159,7 +160,7 @@ Option get(Node* n, Comparable key)
     } 
 }
 
-Option tree_get(Tree* tree, Comparable key)
+Dynamic tree_get(Tree* tree, Comparable key)
 {
     return get(tree->root, key);
 }
@@ -212,7 +213,7 @@ bool tree_is_empty(Tree* tree)
 
 bool tree_contains(Tree* tree, Comparable key)
 {
-    return tree_get(tree, key).type != NONE;
+    return isSome(tree_get(tree, key));
 }
 
 Node* balance(Node* n)

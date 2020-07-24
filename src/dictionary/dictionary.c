@@ -1,7 +1,6 @@
 #include "dictionary.h"
 #include "./../fail/fail.h"
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../hash/hash.h"
 
 #include <string.h>
@@ -74,7 +73,7 @@ void dict_put(Dict* dict, unsigned long key, Dynamic value)
     dict->size++;
 }
 
-Option dict_get(Dict* dict, unsigned long key)
+Dynamic dict_get(Dict* dict, unsigned long key)
 {
     if (dict_isEmpty(dict))
     {
@@ -95,8 +94,8 @@ Option dict_get(Dict* dict, unsigned long key)
 
 bool dict_contains(Dict* dict, unsigned long key)
 {
-    Option opt = dict_get(dict, key);
-    return opt.type == SOME;
+    Dynamic opt = dict_get(dict, key);
+    return isSome(opt);
 }
 
 void dict_remove_destroy(Dict* dict, unsigned long key, void (*destroyer)(Dynamic))
@@ -133,7 +132,7 @@ void dict_remove(Dict* dict, unsigned long key)
     dict_remove_destroy(dict, key, default_destroyer);
 }
 
-Option dict_get_s(Dict* dict, char* key)
+Dynamic dict_get_s(Dict* dict, char* key)
 {
     return dict_get(dict, hash(key));
 }

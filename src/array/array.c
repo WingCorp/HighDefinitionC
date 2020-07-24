@@ -1,7 +1,6 @@
 #include "./array.h"
 #include "./../dynamic/dynamic.h"
 #include "./../iterator/iterator.h"
-#include "./../option/option.h"
 #include "./../fail/fail.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,7 +50,7 @@ Dynamic array_item(Array* array, int index)
     else failwithf("Index %d out of bounds [0;%d[!\n", index, array->length);
 }
 
-Option array_tryItem(Array* array, int index)
+Dynamic array_tryItem(Array* array, int index)
 {
     if (index >= 0 && index < array->length)
     {
@@ -83,7 +82,7 @@ Array* array_initFromIterator(Iterator* it)
     int i = 0;
     while(iterator_hasNext(it))
     {
-        array->data[i] = iterator_next(it).value;
+        array->data[i] = coerce(iterator_next(it));
         i += 1;
     }
     iterator_destroy(it);

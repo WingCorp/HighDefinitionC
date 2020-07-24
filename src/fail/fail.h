@@ -3,7 +3,9 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <execinfo.h>
+#endif
 #include <stdio.h>
 #include <stdarg.h>
 

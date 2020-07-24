@@ -8,11 +8,11 @@ int array_emptyCanBeUsedForValues()
 {
     Array* array = array_empty(1);
     array_setItem(array, 0, di32(1));
-    Option itemOpt = array_item(array, 0);
+    Dynamic itemOpt = array_tryItem(array, 0);
     return
         assertIntEquals(SOME, itemOpt.type)
     &&
-        assertIntEquals(1, i32(itemOpt.value));
+        assertIntEquals(1, i32(coerce(itemOpt)));
 }
 
 

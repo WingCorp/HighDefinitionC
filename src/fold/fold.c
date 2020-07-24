@@ -5,7 +5,7 @@ Dynamic fold(Iterator* iterator, Dynamic initialState, Dynamic (*folder) (Dynami
     Dynamic current_state = initialState;
     while (iterator_hasNext(iterator))
     {
-        Dynamic currentValue = iterator_next(iterator).value;
+        Dynamic currentValue = coerce(iterator_next(iterator));
         current_state = (*folder)(current_state, currentValue);
     }
     iterator_reset(iterator);

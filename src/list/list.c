@@ -1,7 +1,6 @@
 #include "list.h"
 #include <stdbool.h>
 #include <stdlib.h>
-#include "./../option/option.h"
 #include "./../iterator/iterator.h"
 #include <stdio.h>
 
@@ -100,7 +99,7 @@ List* list_concatenate(List* listA, List* listB)
     return outList;
 }
 
-Option list_head(List* list)
+Dynamic list_head(List* list)
 {
     if (list->start)
     {
@@ -121,7 +120,7 @@ List* list_tail(List* list)
     return outList;
 }
 
-Option list_item(List* list, int index)
+Dynamic list_item(List* list, int index)
 {
     if (index < 0 || index >= list->length)
     {
@@ -179,7 +178,7 @@ List* list_initFromIterator(Iterator* it)
     List* list = list_empty();
     while(iterator_hasNext(it))
     {
-        list = list_cons(list, iterator_next(it).value);
+        list = list_cons(list, iterator_next(it));
     }
     return list;
 }
@@ -230,7 +229,7 @@ List* list_from(int count, Dynamic item, ...)
     va_start(args, item);
     
     List* list = list_empty();
-    list_cons(list, item);
+    list = list_cons(list, item);
 
     int i;
     for (i = 1; i < count; i++)

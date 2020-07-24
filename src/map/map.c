@@ -1,5 +1,6 @@
 #include "map.h"
 #include <stdlib.h>
+#include "../lambda/lambda.h"
 
 Iterator* map(Iterator* ite, Dynamic (*mapper) (Dynamic))
 {
@@ -8,7 +9,7 @@ Iterator* map(Iterator* ite, Dynamic (*mapper) (Dynamic))
     int i = 0;
     while(iterator_hasNext(ite))
     {
-        mappedValues[i] = (*mapper)(iterator_next(ite).value);
+        mappedValues[i] = (*mapper)(coerce(iterator_next(ite)));
         i += 1;
     }
     iterator_reset(ite);

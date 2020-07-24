@@ -34,12 +34,12 @@ int stack_pushPopTest()
     Stack* stack = stack_init(stackCap);
     int val = 10;
     stack_push(stack, di32(val));
-    Option opt = stack_pop(stack);
+    Dynamic opt = stack_pop(stack);
     stack_destroy(stack);
     return
-        assertTrue("opt.type == SOME", opt.type == SOME)
+        assertTrue("opt is SOME", isSome(opt))
         &&
-        assertIntEquals(val, i32(opt.value));
+        assertIntEquals(val, i32(coerce(opt)));
 }
 
 Dynamic squareInts(Dynamic intDyn)
@@ -55,9 +55,9 @@ int stack_mapToSquares()
     stack_push(stack, di32(3));
     Stack* squaredStack = stack_map(stack, squareInts);
     stack_destroy(stack);
-    int nine = i32(stack_pop(squaredStack).value);
-    int four = i32(stack_pop(squaredStack).value);
-    int one = i32(stack_pop(squaredStack).value);
+    int nine = i32(coerce(stack_pop(squaredStack)));
+    int four = i32(coerce(stack_pop(squaredStack)));
+    int one = i32(coerce(stack_pop(squaredStack)));
     return
         assertIntEquals(9, nine)
         &&

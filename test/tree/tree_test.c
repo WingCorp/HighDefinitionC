@@ -1,5 +1,4 @@
 #include "./../../src/comparable/comparable.h"
-#include "./../../src/option/option.h"
 #include "./../../src/tree/tree.h"
 #include "./../assert.h"
 #include "./../test.h"

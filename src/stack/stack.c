@@ -7,7 +7,6 @@
  */
 
 #include "stack.h"
-#include "./../option/option.h"
 #include "./../iterator/iterator.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -63,7 +62,7 @@ void decreaseCapacity(Stack* stack)
     reallocStack(stack, 0.5);
 }
 
-Option stack_pop(Stack* stack)
+Dynamic stack_pop(Stack* stack)
 {
     if (stack->size == 0)
     {
@@ -79,7 +78,7 @@ Option stack_pop(Stack* stack)
     return some(toReturn);
 }
 
-Option stack_peek(Stack* stack)
+Dynamic stack_peek(Stack* stack)
 {
     if (stack->size == 0)
     {

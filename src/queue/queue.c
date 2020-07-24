@@ -41,13 +41,13 @@ void migrate(Queue* queue)
     }
 }
 
-Option queue_poll(Queue* queue)
+Dynamic queue_poll(Queue* queue)
 {
     migrate(queue);
     return stack_pop(queue->right);
 }
 
-Option queue_peek(Queue* queue)
+Dynamic queue_peek(Queue* queue)
 {
     migrate(queue);
     return stack_peek(queue->right);

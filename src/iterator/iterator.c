@@ -1,5 +1,4 @@
 #include "iterator.h"
-#include "./../option/option.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -61,7 +60,7 @@ bool iterator_hasNext(Iterator* iterator)
     return iterator->position < iterator->length;
 }
 
-Option iterator_next(Iterator* iterator)
+Dynamic iterator_next(Iterator* iterator)
 {
     if(iterator->position < iterator->length)
     {

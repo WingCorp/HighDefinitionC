@@ -10,7 +10,6 @@
  */
 
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../iterator/iterator.h"
 
 typedef struct _Stack Stack;
@@ -44,7 +43,7 @@ void stack_push(Stack* stack, Dynamic dyn);
  * @param stack the stack to pop from.
  * @return Option the value from the stack, if any.
  */
-Option stack_pop(Stack* stack);
+Dynamic stack_pop(Stack* stack);
 
 /**
  * @brief Peeks at the top value of a Stack.
@@ -52,7 +51,7 @@ Option stack_pop(Stack* stack);
  * @param stack The stack to peek at.
  * @return Option The value at the top of the stack, if any.
  */
-Option stack_peek(Stack* stack);
+Dynamic stack_peek(Stack* stack);
 
 /**
  * @brief Determines number of values currently stored in the stack.

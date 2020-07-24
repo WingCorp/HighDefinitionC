@@ -4,7 +4,7 @@ void foreach(Iterator* iterator, void (*action) (Dynamic))
 {
     while (iterator_hasNext(iterator))
     {
-        (*action)(iterator_next(iterator).value);
+        (*action)(coerce(iterator_next(iterator)));
     }
     iterator_reset(iterator);
 }

@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 
+
 typedef struct _Dynamic Dynamic;
 
 typedef enum _DynType 
@@ -24,7 +25,8 @@ typedef enum _DynType
     DOUBLE,
     REFERENCE,
     STRING,
-    PAIR
+    PAIR,
+    OPTION
 } DynType;
 
 typedef struct _Pair
@@ -32,6 +34,18 @@ typedef struct _Pair
     Dynamic* left;
     Dynamic* right;
 } Pair;
+
+typedef enum _OptionType
+{
+    NONE,
+    SOME
+} OptionType;
+
+typedef struct _Option
+{
+    OptionType type;
+    Dynamic* value;
+} Option;
 
 typedef union _DynValue
 {
@@ -46,6 +60,7 @@ typedef union _DynValue
     char* str;
     void* ref;
     Pair pair;
+    Option option;
 } DynValue;
 
 typedef struct _Dynamic
@@ -95,6 +110,63 @@ Dynamic snd(Dynamic pair);
  */
 DynType t_snd(Dynamic pair);
 
+/**
+ * @brief The 'none' return-function.
+ * 
+ * @return Dynamic 
+ */
+Dynamic none();
+
+/**
+ * @brief The 'some' return-function
+ * 
+ * @param value 
+ * @return Dynamic 
+ */
+Dynamic some(Dynamic value);
+
+/**
+ * @brief Takes an option and a function 
+ *        that takes the result of the given option
+ *        and applies the option to the given function
+ *        if the option was some.
+ *
+ * @param opt an Dynamic value.
+ * @param optFunc a function of signature: Dynamic <name>(Dynamic <arg>); 
+ * @return Dynamic an option value.
+ */
+Dynamic success(Dynamic opt, Dynamic (*optFunc)(Dynamic));
+
+/**
+ * @brief Coerces an option to its value.
+ *        Might cause a failure, if no value is present.
+ * 
+ * @param opt the option to coerce.
+ * @return Dynamic the value to find;
+ */
+Dynamic coerce(Dynamic opt);
+
+/**
+ * @brief Checks if an option has the type SOME.
+ *  
+ * @return int 1 if it is, 0 otherwise
+ */
+#define isSome(opt) opt.type == OPTION && opt.value.option.type == SOME
+
+/**
+ * @brief Checks if an option has the type NONE.
+ * 
+ * @return int 1 if it is, 0 otherwise
+ */
+#define isNone(opt) opt.type == OPTION && opt.value.option.type == NONE
+
+/**
+ * @brief Determines the type of a dynamic option.
+ * 
+ * @param option the option.
+ * @return DynType the type.
+ */
+DynType t_option(Dynamic option);
 
 Dynamic dbol(bool val);
 Dynamic dchr(char val);
@@ -129,5 +201,13 @@ void* ref(Dynamic dyn);
  * @param dyn A dynamic holding a reference or a pair-dynamic.
  */
 void delete(Dynamic dyn);
+
+/**
+ * @brief Returns the string name of the given Dynamic Type.
+ * 
+ * @param type A DynType.
+ * @returns The type's name.
+ */
+char* typename(DynType type);
 
 #endif

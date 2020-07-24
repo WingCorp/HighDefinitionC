@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "./../dynamic/dynamic.h"
 #include "./../queue/queue.h"
 #include "./../str/str.h"
 #include "./../fail/fail.h"
@@ -35,7 +36,7 @@ Input *input_fromPath(char *path, int bufferSize)
     return input_fromFile(file, bufferSize);
 }
 
-Option input_readLine(Input *input)
+Dynamic input_readLine(Input *input)
 {
     int result = fscanf(input->file, "%s\n", input->buffer);
     if (result == EOF)
@@ -47,8 +48,8 @@ Option input_readLine(Input *input)
 
 Dynamic input_scan(Input *input, Dynamic (*scanFun)(char *))
 {
-    Option line = input_readLine(input);
-    if (line.type == NONE)
+    Dynamic line = input_readLine(input);
+    if (isNone(line))
     {
         failwith("input_scan failed: no lines in file!");
     }
@@ -58,8 +59,8 @@ Dynamic input_scan(Input *input, Dynamic (*scanFun)(char *))
 Iterator *input_scanEnd(Input *input, Dynamic (*scanfun)(char *))
 {
     Queue* q = queue_init(16);
-    Option currentLineOpt = input_readLine(input);
-    while (currentLineOpt.type != NONE)
+    Dynamic currentLineOpt = input_readLine(input);
+    while (isSome(currentLineOpt))
     {
         queue_add(q, (*scanfun)(str(coerce(currentLineOpt))));
         currentLineOpt = input_readLine(input);
@@ -69,8 +70,8 @@ Iterator *input_scanEnd(Input *input, Dynamic (*scanfun)(char *))
 
 void input_scanEndHandler(Input* input, void (*lineHandler)(char*))
 {
-    Option currentLineOpt = input_readLine(input);
-    while (currentLineOpt.type != NONE)
+    Dynamic currentLineOpt = input_readLine(input);
+    while (isSome(currentLineOpt))
     {
         (*lineHandler)(str(coerce(currentLineOpt)));
         currentLineOpt = input_readLine(input);
@@ -80,11 +81,11 @@ void input_scanEndHandler(Input* input, void (*lineHandler)(char*))
 Iterator *input_scanN(Input *input, Dynamic (*scanfun)(char *), int n)
 {
     Queue* q = queue_init(n);
-    Option currentLineOpt = input_readLine(input);
+    Dynamic currentLineOpt = input_readLine(input);
     int i;
     for (i = 0; i < n; i++)
     {
-        if (currentLineOpt.type == NONE)
+        if (isNone(currentLineOpt))
         {
             char *format = "input_scan_n() reach end of file after %d lines, but expected %d!";
             char *msgBuffer = malloc(sizeof(char) + sizeof(char) * (ilog10(n) + 1) * 2 + strlen(format));
@@ -99,11 +100,11 @@ Iterator *input_scanN(Input *input, Dynamic (*scanfun)(char *), int n)
 
 void input_scanNHandler(Input* input, void (*lineHandler)(char*), int n)
 {
-    Option currentLineOpt = input_readLine(input);
+    Dynamic currentLineOpt = input_readLine(input);
     int i;
     for (i = 0; i < n; i++)
     {
-        if (currentLineOpt.type == NONE)
+        if (isNone(currentLineOpt))
         {
             char *format = "input_scan_n() reach end of file after %d lines, but expected %d!";
             char *msgBuffer = malloc(sizeof(char) + sizeof(char) * (ilog10(n) + 1) * 2 + strlen(format));

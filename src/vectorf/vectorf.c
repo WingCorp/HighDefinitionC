@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "./../dynamic/dynamic.h"
-#include "./../option/option.h"
 #include "./../fail/fail.h"
 
 Vectorf* vectorf_zero(int size)

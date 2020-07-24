@@ -20,14 +20,14 @@ typedef struct _Option
 {
     OptionType type;
     Dynamic value;
-} Option;
+} Dynamic;
 
 /**
  * @brief The 'none' return-function.
  * 
  * @return Option 
  */
-Option none();
+Dynamic none();
 
 /**
  * @brief The 'some' return-function
@@ -35,7 +35,7 @@ Option none();
  * @param value 
  * @return Option 
  */
-Option some(Dynamic value);
+Dynamic some(Dynamic value);
 
 /**
  * @brief Takes an option and a function 
@@ -47,7 +47,7 @@ Option some(Dynamic value);
  * @param optFunc a function of signature: Option <name>(Dynamic <arg>); 
  * @return Option an option value.
  */
-Option success(Option opt, Option (*optFunc)(Dynamic));
+Dynamic success(Dynamic opt, Dynamic (*optFunc)(Dynamic));
 
 /**
  * @brief Coerces an option to its value.
@@ -56,7 +56,7 @@ Option success(Option opt, Option (*optFunc)(Dynamic));
  * @param opt the option to coerce.
  * @return Dynamic the value to find;
  */
-Dynamic coerce(Option opt);
+Dynamic coerce(Dynamic opt);
 
 /**
  * @brief Checks if an option has the type SOME.

@@ -119,7 +119,7 @@ void add_to_build_order(Queue* build_order, SourceFile* sf)
         iterator_destroy(qit);
         return;
     }
-    Option depOpt;
+    Dynamic depOpt;
     for (depOpt = iterator_next(qit); isSome(depOpt); depOpt = iterator_next(qit))
     {
         SourceFile* inner = (SourceFile*) ref(coerce(depOpt));

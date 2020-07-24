@@ -1,3 +1,4 @@
+#include "./../../src/dynamic/dynamic.h"
 #include "./../../src/dictionary/dictionary.h"
 #include "./../assert.h"
 #include "./../test.h"
@@ -8,16 +9,16 @@
 int dict_emptyCreatesEmptyDict()
 {
     Dict* dict = dict_empty();
-    Option opt = dict_get(dict, 0ul);
-    return assertTrue("dict_get() on empty dictionary returns None", opt.type == NONE);
+    Dynamic opt = dict_get(dict, 0ul);
+    return assertTrue("dict_get() on empty dictionary returns None", isNone(opt));
 }
 
 int dict_createDictFromParams()
 {
     Dict* dict = dict_from(2, pair(dui64(hash("One")), di32(1)), pair(dui64(hash("Zero")), di32(0)));
-    Option one = dict_get_s(dict, "One");
+    Dynamic one = dict_get_s(dict, "One");
     int lolVal = i32(coerce(one));
-    Option zero = dict_get_s(dict, "Zero");
+    Dynamic zero = dict_get_s(dict, "Zero");
     int shtVal = i32(coerce(zero));
     return assertIntEquals(1, lolVal) && assertIntEquals(0, shtVal);
 }
@@ -26,7 +27,7 @@ int dict_putUntilResize()
 {
     Dict* dict = dict_empty();
     dict_put_s(dict, "What", dref("Ever"));
-    Option opt = dict_get_s(dict, "What");
+    Dynamic opt = dict_get_s(dict, "What");
     char* optVal = ref(coerce(opt));
 
     char* keys[4] = {"a", "b", "c", "d"};    
